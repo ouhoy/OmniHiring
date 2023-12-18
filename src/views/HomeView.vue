@@ -13,7 +13,9 @@
 
       </div>
       <div class="onboarding-buttons">
-        <button class="primary-btn">Create Account</button>
+        <router-link class="primary-btn" :to='{name: "register"}'>
+          <button class="primary-btn">Create Account</button>
+        </router-link>
         <button class="secondary-btn">Login</button>
       </div>
     </div>
