@@ -2,6 +2,7 @@
 
 form {
   width: 100%;
+
   input {
     width: 100%;
     font-size: 16px;
@@ -17,23 +18,31 @@ form {
 
 
     &:hover {
-      outline: 1px solid $primary-light-active ;
+      outline: 1px solid $primary-light-active;
     }
 
     &:active, &:focus {
-      border: 2px solid   $primary;
-      outline:1px solid $primary-light;
+      border: 2px solid $primary;
+      outline: 1px solid $primary-light;
     }
   }
+
   .form-input-error {
     color: #EC0000;
-
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 16px; /* 114.286% */
-    letter-spacing: -0.408px;
+    font-family: Work Sans, serif;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+   p {
+     font-size: 14px;
+     font-style: normal;
+     font-weight: 400;
+     line-height: 16px; /* 114.286% */
+     letter-spacing: -0.408px;
+   }
   }
+
   label {
 
     color: #0B1221;
@@ -45,10 +54,26 @@ form {
     letter-spacing: -0.408px;
   }
 
-  input[type="password"] {
-    font-weight: 700;
-    font-size: 18px;
+  .password-label {
+
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    p {
+      color: #195BFF;
+      font-family: Work Sans, serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 16px; /* 114.286% */
+      letter-spacing: -0.408px;
+    }
   }
+
+
+
   .full-name-container {
     width: 100%;
     gap: 16px;
@@ -57,6 +82,7 @@ form {
     align-items: center;
 
   }
+
   .input-container {
     width: 100%;
     display: flex;
@@ -139,7 +165,7 @@ form {
   }
 
   /* When the checkbox is checked, add a blue background */
-  .checkbox-container input:checked ~ .checkmark{
+  .checkbox-container input:checked ~ .checkmark {
     background-color: $primary;
     border-color: $primary;
   }
@@ -163,7 +189,7 @@ form {
     left: 25%;
     background-image: url("src/assets/images/icons/check-icon.svg");
     width: 12px;
-    height: 9.5px;
+    height: 9.3px;
 
   }
 }

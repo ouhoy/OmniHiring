@@ -1,8 +1,11 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {reactive, ref} from "vue";
+import GoBack from "@/components/GoBack.vue";
+import IconCircleExclamation from "@/components/icons/IconCircleExclamation.vue";
 
 const error = ref("")
+const errors = reactive({firstname: "", lastname: "", email: "", password:""})
 const showIndividualForm = ref(true)
 const showBusinessForm = ref(false)
 function handleToggleClick(isIndividual: boolean) {
@@ -15,21 +18,31 @@ function handleToggleClick(isIndividual: boolean) {
   }
 }
 
+
+function handleSubmit() {
+  errors.email = "Please make sure to enter your email!"
+}
+
+
+
 </script>
 
 <template>
   <main>
     <div class="login-register-container">
+      <GoBack/>
+
       <div class="titles">
         <h2>Get started with<br>Omni Hiring</h2>
-        <p>Already have an account? <a>Login here.</a></p>
+        <p>Already have an account? <router-link :to="{name: 'login'}">Login here.</router-link></p>
       </div>
+
       <div class="form-container">
         <div class="toggle-container">
           <button class="toggle-btn" :class="{ 'selected': showIndividualForm }" @click="handleToggleClick(true)">Individual</button>
           <button class="toggle-btn" :class="{ 'selected': showBusinessForm }" @click="handleToggleClick(false)">Business</button>
         </div>
-        <form class="form-container">
+        <form @submit.prevent="handleSubmit" class="form-container">
 
           <div v-if="showIndividualForm" class="full-name-container">
 
@@ -59,8 +72,9 @@ function handleToggleClick(isIndividual: boolean) {
           <div class="input-container">
             <label>Email</label>
             <input type="email" name="email" id="email" placeholder="Email@example.com">
-            <div v-if="error" class="form-input-error">
-              <p></p>
+            <div v-if="errors.email" class="form-input-error">
+
+              <p>{{errors.email}}</p>
             </div>
           </div>
 
@@ -73,7 +87,7 @@ function handleToggleClick(isIndividual: boolean) {
           </div>
 
      <div class="checkbox-label">
-       <label class="checkbox-container"><p>I agree with Privacy Policy and Terms of Use.</p>
+       <label class="checkbox-container"><p>I agree with <a>Privacy Policy</a> and <a>Terms of Use</a>.</p>
          <input type="checkbox" >
          <span class="checkmark"></span>
        </label>
@@ -88,6 +102,11 @@ function handleToggleClick(isIndividual: boolean) {
 <style lang="scss">
 @import "src/assets/styles/form";
 .login-register-container {
+
+  p {
+    font-weight: 500;
+  }
+
   width: 95%;
   margin: 16px auto 0;
   display: flex;

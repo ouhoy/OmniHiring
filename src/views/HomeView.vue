@@ -13,10 +13,14 @@
 
       </div>
       <div class="onboarding-buttons">
-        <router-link class="primary-btn" :to='{name: "register"}'>
+        <router-link class="onboarding-btn" :to='{name: "register"}'>
           <button class="primary-btn">Create Account</button>
         </router-link>
-        <button class="secondary-btn">Login</button>
+
+        <router-link class="onboarding-btn" :to='{name: "login"}'>
+          <button class="secondary-btn">Login</button>
+        </router-link>
+
       </div>
     </div>
   </main>
@@ -73,7 +77,9 @@
   }
 
   .onboarding-buttons {
-
+   .onboarding-btn {
+     width: 100%;
+   }
     width: 100%;
     margin-bottom: 32px;
 
