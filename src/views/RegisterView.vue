@@ -3,6 +3,17 @@
 import {ref} from "vue";
 
 const error = ref("")
+const showIndividualForm = ref(true)
+const showBusinessForm = ref(false)
+function handleToggleClick(isIndividual: boolean) {
+  if (isIndividual) {
+    showIndividualForm.value = true;
+    showBusinessForm.value = false;
+  } else {
+    showIndividualForm.value = false;
+    showBusinessForm.value = true;
+  }
+}
 
 </script>
 
@@ -15,12 +26,12 @@ const error = ref("")
       </div>
       <div class="form-container">
         <div class="toggle-container">
-          <button class="toggle-btn selected">Individual</button>
-          <button class="toggle-btn">Business</button>
+          <button class="toggle-btn" :class="{ 'selected': showIndividualForm }" @click="handleToggleClick(true)">Individual</button>
+          <button class="toggle-btn" :class="{ 'selected': showBusinessForm }" @click="handleToggleClick(false)">Business</button>
         </div>
         <form class="form-container">
 
-          <div class="full-name-container">
+          <div v-if="showIndividualForm" class="full-name-container">
 
             <div class="input-container">
               <label>First Name</label>
@@ -38,7 +49,13 @@ const error = ref("")
               </div>
             </div>
           </div>
-
+          <div v-if="showBusinessForm" class="input-container">
+            <label>Company Name</label>
+            <input type="text" name="company" id="company" placeholder="Company name">
+            <div v-if="error" class="form-input-error">
+              <p></p>
+            </div>
+          </div>
           <div class="input-container">
             <label>Email</label>
             <input type="email" name="email" id="email" placeholder="Email@example.com">
