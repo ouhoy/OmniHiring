@@ -150,8 +150,11 @@ form {
     position: absolute;
     top: 0;
     left: 0;
+    box-sizing: border-box;
     height: 24px;
     width: 24px;
+    max-width: 24px !important;
+    max-height: 24px !important;
     background-color: white;
     border-radius: 5px;
     border: 1px solid #C2C9D1;

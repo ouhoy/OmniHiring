@@ -50,6 +50,47 @@ const error = ref("")
   </main>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
+@import "src/assets/styles/form";
+@import "src/assets/styles/form";
+.login-register-container {
 
+  p {
+    font-weight: 500;
+  }
+
+  width: 95%;
+  margin: 16px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  align-items: flex-start;
+  justify-content: center;
+  .titles {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    p {
+      color: #4D4D4D;
+      text-align: left;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      letter-spacing: -0.408px;
+    }
+  }
+
+  .form-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+  }
+
+}
 </style>
