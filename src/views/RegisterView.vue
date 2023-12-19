@@ -4,15 +4,15 @@ import {reactive, ref} from "vue";
 import GoBack from "@/components/GoBack.vue";
 import FormInput from "@/components/FormInput.vue";
 
-const error = ref("")
 const errors = reactive({firstname: "", lastname: "", companyName: "", email: "", password:""})
 const showIndividualForm = ref(true)
 const showBusinessForm = ref(false)
 
 
 const userType = ref("person")
-const firstName = ref("Abde");
+const firstName = ref("");
 const lastName = ref("");
+const companyName = ref("");
 const email = ref("");
 const password =ref("");
 
@@ -65,17 +65,17 @@ function handleSubmit() {
 
           </div>
 
-          <FormInput v-if="showBusinessForm" label="Company Name" placeholder="Company name" type="text" :error="errors.companyName"/>
-          <FormInput label="Email" placeholder="Email@example.com" type="email" :error="errors.email"/>
+          <FormInput v-if="showBusinessForm" v-model="companyName" label="Company Name" placeholder="Company name" type="text" :error="errors.companyName"/>
+          <FormInput label="Email" v-model="email" placeholder="Email@example.com" type="email" :error="errors.email"/>
 
 
-          <FormInput label="Password" placeholder="Password" type="password" :error="errors.password"/>
+          <FormInput label="Password" v-model="password" placeholder="Password" type="password" :error="errors.password"/>
 
 
 
      <div class="checkbox-label">
-       <label class="checkbox-container"><p>I agree with <a>Privacy Policy</a> and <a>Terms of Use</a>.</p>
-         <input type="checkbox" >
+       <label class="checkbox-container"><span>I agree with <a>Privacy Policy</a> and <a>Terms of Use</a>.</span>
+         <input type="checkbox" checked>
          <span class="checkmark"></span>
        </label>
      </div>
