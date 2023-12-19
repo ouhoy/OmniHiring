@@ -7,7 +7,7 @@ const error = ref("");
 const isPending = ref(false);
 
 
-async function signup(displayName: string, email: string, password: string) {
+async function signup(userType: "business" | "person",displayName: string, email: string, password: string) {
     error.value = ""
     isPending.value = true
 

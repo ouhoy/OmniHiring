@@ -2,12 +2,22 @@
 
 import {reactive, ref} from "vue";
 import GoBack from "@/components/GoBack.vue";
-import IconCircleExclamation from "@/components/icons/IconCircleExclamation.vue";
+import FormInput from "@/components/FormInput.vue";
 
 const error = ref("")
-const errors = reactive({firstname: "", lastname: "", email: "", password:""})
+const errors = reactive({firstname: "", lastname: "", companyName: "", email: "", password:""})
 const showIndividualForm = ref(true)
 const showBusinessForm = ref(false)
+
+
+const userType = ref("person")
+const firstName = ref("Abde");
+const lastName = ref("");
+const email = ref("");
+const password =ref("");
+
+
+
 function handleToggleClick(isIndividual: boolean) {
   if (isIndividual) {
     showIndividualForm.value = true;
@@ -16,11 +26,14 @@ function handleToggleClick(isIndividual: boolean) {
     showIndividualForm.value = false;
     showBusinessForm.value = true;
   }
+   userType.value = showIndividualForm.value? "person": "business";
+
 }
 
 
 function handleSubmit() {
-  errors.email = "Please make sure to enter your email!"
+  errors.email = "Please make sure to enter your email!";
+  console.log(firstName.value)
 }
 
 
@@ -42,49 +55,23 @@ function handleSubmit() {
           <button class="toggle-btn" :class="{ 'selected': showIndividualForm }" @click="handleToggleClick(true)">Individual</button>
           <button class="toggle-btn" :class="{ 'selected': showBusinessForm }" @click="handleToggleClick(false)">Business</button>
         </div>
+
         <form @submit.prevent="handleSubmit" class="form-container">
 
           <div v-if="showIndividualForm" class="full-name-container">
 
-            <div class="input-container">
-              <label>First Name</label>
-              <input type="text" name="firstname" id="firstname" placeholder="First name">
-              <div v-if="error" class="form-input-error">
-                <p></p>
-              </div>
-            </div>
+            <FormInput label="First Name" v-model="firstName" placeholder="First name" type="text" :error="errors.firstname"/>
+            <FormInput label="Last Name" v-model="lastName" placeholder="Last name" type="text" :error="errors.lastname"/>
 
-            <div class="input-container">
-              <label>Last Name</label>
-              <input type="text" name="lastname" id="lastname" placeholder="Last name">
-              <div v-if="error" class="form-input-error">
-                <p></p>
-              </div>
-            </div>
-          </div>
-          <div v-if="showBusinessForm" class="input-container">
-            <label>Company Name</label>
-            <input type="text" name="company" id="company" placeholder="Company name">
-            <div v-if="error" class="form-input-error">
-              <p></p>
-            </div>
-          </div>
-          <div class="input-container">
-            <label>Email</label>
-            <input type="email" name="email" id="email" placeholder="Email@example.com">
-            <div v-if="errors.email" class="form-input-error">
-
-              <p>{{errors.email}}</p>
-            </div>
           </div>
 
-          <div class="input-container">
-            <label>Password</label>
-            <input type="password" name="password" id="password" placeholder="Password">
-              <div v-if="error" class="form-input-error">
-                <p></p>
-              </div>
-          </div>
+          <FormInput v-if="showBusinessForm" label="Company Name" placeholder="Company name" type="text" :error="errors.companyName"/>
+          <FormInput label="Email" placeholder="Email@example.com" type="email" :error="errors.email"/>
+
+
+          <FormInput label="Password" placeholder="Password" type="password" :error="errors.password"/>
+
+
 
      <div class="checkbox-label">
        <label class="checkbox-container"><p>I agree with <a>Privacy Policy</a> and <a>Terms of Use</a>.</p>
@@ -92,6 +79,7 @@ function handleSubmit() {
          <span class="checkmark"></span>
        </label>
      </div>
+
       <button class="primary-btn">Create Account</button>
         </form>
       </div>

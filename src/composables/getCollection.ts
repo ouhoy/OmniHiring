@@ -11,6 +11,7 @@ function getCollection<T>(collectionName: string, userUid?: string ) {
     let collectionReference = collection(db, collectionName);
 
     if (userUid) {
+        // @ts-ignore
         collectionReference = query(collectionReference, where('userId', '==', userUid))
     }
 
