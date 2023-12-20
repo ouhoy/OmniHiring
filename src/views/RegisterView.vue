@@ -11,8 +11,9 @@ const showBusinessForm = ref(false)
 
 
 const userType = ref("person")
-const firstName = ref("Abde");
+const firstName = ref("");
 const lastName = ref("");
+const companyName = ref("");
 const email = ref("");
 const password =ref("");
 
@@ -65,17 +66,16 @@ function handleSubmit() {
 
           </div>
 
-          <FormInput v-if="showBusinessForm" label="Company Name" placeholder="Company name" type="text" :error="errors.companyName"/>
-          <FormInput label="Email" placeholder="Email@example.com" type="email" :error="errors.email"/>
+          <FormInput v-model="companyName" v-if="showBusinessForm" label="Company Name" placeholder="Company name" type="text" :error="errors.companyName"/>
+          <FormInput v-model="email" label="Email" placeholder="Email@example.com" type="email" :error="errors.email"/>
 
-
-          <FormInput label="Password" placeholder="Password" type="password" :error="errors.password"/>
+          <FormInput v-model="password" label="Password" placeholder="Password" type="password" :error="errors.password"/>
 
 
 
      <div class="checkbox-label">
-       <label class="checkbox-container"><p>I agree with <a>Privacy Policy</a> and <a>Terms of Use</a>.</p>
-         <input type="checkbox" >
+       <label class="checkbox-container"><span>I agree with <a>Privacy Policy</a> and <a>Terms of Use</a>.</span>
+         <input type="checkbox" checked>
          <span class="checkmark"></span>
        </label>
      </div>
