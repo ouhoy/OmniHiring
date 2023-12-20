@@ -22,27 +22,36 @@ async function signup(userType: "person" | "business", displayName: string, emai
         // Set the user's displayName
         await updateProfile(res.user, {displayName})
 
-        const personRef = collection(db, "persons");
-        const businessRef = collection(db, "businesses");
+        // const personRef = collection(db, "persons");
+        // const businessRef = collection(db, "businesses");
+        const userRef = collection(db, "users");
+
+
 
         if (userType === "person") {
-            await addDoc(personRef, {
+
+
+            await addDoc(userRef, {
+
                 uid: res.user.uid,
                 firstname: displayName.split("-")[0],
                 lastname: displayName.split("-")[1],
                 email,
-                applications: []
+                applications: [],
+                userType
             });
 
         }
 
         if (userType === "business") {
-            await addDoc(businessRef, {
+
+            await addDoc(userRef, {
                 uid: res.user.uid,
                 displayName,
                 email,
-                listings: []
-            });
+                listings: [],
+                userType
+            })
 
         }
 

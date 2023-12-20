@@ -15,6 +15,8 @@ async function handleLogout() {
 
 }
 
+console.log(user.value)
+
 </script>
 
 <template>

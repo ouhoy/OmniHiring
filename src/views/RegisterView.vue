@@ -193,14 +193,7 @@ async function handleSubmit() {
     }
   }
 
-  .form-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    align-items: center;
-    justify-content: center;
-  }
+
 
 }
 </style>

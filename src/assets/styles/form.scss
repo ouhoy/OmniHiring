@@ -1,5 +1,12 @@
 @import "globals";
-
+.form-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+}
 form {
   width: 100%;
 
@@ -10,6 +17,29 @@ form {
     outline-color: white;
     box-sizing: border-box;
     height: 56px !important;
+    border-radius: 8px;
+    border: 1px solid #C2C9D1;
+    background: #FFF;
+
+    transition: $main-transition;
+
+
+    &:hover {
+      outline: 1px solid $primary-light-active;
+    }
+
+    &:active, &:focus {
+      border: 2px solid $primary;
+      outline: 1px solid $primary-light;
+    }
+  }
+
+  textarea {
+    width: 100%;
+    font-size: 16px;
+    padding: 16px;
+    outline-color: white;
+    box-sizing: border-box;
     border-radius: 8px;
     border: 1px solid #C2C9D1;
     background: #FFF;

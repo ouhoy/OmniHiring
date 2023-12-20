@@ -54,7 +54,13 @@ const router = createRouter({
       component: () => import('../views/AppView.vue'),
       beforeEnter: requireAuth
 
-    }
+    },
+    {
+      path: '/post',
+      name: 'post',
+      component: () => import('../views/PostView.vue'),
+      beforeEnter: requireAuth
+    },
   ]
 })
 
