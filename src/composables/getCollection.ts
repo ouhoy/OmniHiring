@@ -12,7 +12,7 @@ function getCollection<T>(collectionName: string, userUid?: string ) {
 
     if (userUid) {
         // @ts-ignore
-        collectionReference = query(collectionReference, where('userId', '==', userUid))
+        collectionReference = query(collectionReference, where('uid', '==', userUid))
     }
 
     const unsubscribe = onSnapshot(collectionReference, snapshot => {
