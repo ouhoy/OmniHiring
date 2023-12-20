@@ -5,13 +5,33 @@ const {applications, title, postDate, state} = defineProps<{
   postDate: string,
   state: boolean
 }>()
+
+function getDateString(postedDate) {
+  // Convert the posted date string ("20/12/2023") to a Date object
+  const dateParts = postedDate.split('/'); // Assuming the date format is "DD/MM/YYYY"
+  const posted = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+
+  // Get the current date
+  const currentDate = new Date();
+
+  // Calculate the time difference in milliseconds
+  const timeDifference = currentDate.getTime() - posted.getTime();
+  const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+
+  if (daysDifference === 0) {
+    return 'since today';
+  } else {
+    return `${daysDifference} day${daysDifference !== 1 ? 's' : ''} ago`;
+  }
+}
+
 </script>
 
 <template>
-  <div class="card">
+  <div  class="card">
     <p :class="{'active-post': state}"  class="applications">{{ applications }} applications</p>
     <p class="title">{{ title }}</p>
-    <p class="post-date">{{ postDate }}</p>
+    <p class="post-date">{{state?"Active": "Completed" }} {{ getDateString(postDate) }}</p>
   </div>
 </template>
 
@@ -33,7 +53,7 @@ const {applications, title, postDate, state} = defineProps<{
   transition: $main-transition;
 
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.99);
   }
 
   .active-post {
@@ -58,7 +78,7 @@ const {applications, title, postDate, state} = defineProps<{
   .title {
     color: #2D353C;
     font-weight: 500;
-    line-height: 16px; /* 100% */
+    line-height: 16px;
   }
 
   .post-date {
