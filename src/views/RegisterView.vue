@@ -2,11 +2,18 @@
 import {reactive, ref} from "vue";
 import GoBack from "@/components/GoBack.vue";
 import FormInput from "@/components/FormInput.vue";
+import useSignup from "@/composables/useSignup";
 
-const error = ref("")
+import {useRouter} from "vue-router";
+
+
 const errors = reactive({firstname: "", lastname: "", companyName: "", email: "", password: ""})
 const showIndividualForm = ref(true)
 const showBusinessForm = ref(false)
+
+
+const {errorMessage, isPending, signup} = useSignup()
+const router = useRouter()
 
 
 const userType = ref("person")
@@ -70,7 +77,27 @@ function handleSubmit() {
         errors.companyName = "Company name is required." : errors.companyName = ""
   }
 
+  // Validate Password
   (password.value.length < 6) ? (errors.password = "Password should be more than 6 characters.") : (errors.password = "")
+
+  if (!errors.password && !errors.email && !errors.firstname && !errors.lastname && !errors.companyName) {
+
+    if (userType.value === "person") {
+      signup("person", `${firstName.value}-${lastName.value}`, email.value, password.value)
+
+    }
+
+    if (userType.value === "business") {
+      signup("business", companyName.value, email.value, password.value)
+
+    }
+
+    if (!errorMessage.value) {
+
+       router.push('/app')
+    }
+  }
+
 
 }
 
@@ -124,8 +151,8 @@ function handleSubmit() {
               <span class="checkmark"></span>
             </label>
           </div>
-
-          <button class="primary-btn">Create Account</button>
+          <button class="primary-btn">{{ isPending ? 'Creating Account...' : 'Create Account' }}</button>
+          <p>{{ errorMessage }}</p>
         </form>
       </div>
     </div>

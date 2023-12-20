@@ -4,12 +4,12 @@ import {auth, db} from "@/firebase/config";
 import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth"
 import {collection, addDoc} from "firebase/firestore";
 
-const error = ref("");
+const errorMessage = ref("");
 const isPending = ref(false);
 
 
 async function signup(userType: "person" | "business", displayName: string, email: string, password: string) {
-    error.value = ""
+    errorMessage.value = ""
     isPending.value = true
 
     try {
@@ -47,16 +47,16 @@ async function signup(userType: "person" | "business", displayName: string, emai
         }
 
 
-        error.value = ""
+        errorMessage.value = ""
         isPending.value = false
     } catch (err) {
-        error.value = (err as Error).message
+        errorMessage.value = (err as Error).message
         isPending.value = false
     }
 }
 
 const useSignup = () => {
-    return {error, isPending, signup}
+    return {errorMessage, isPending, signup}
 }
 
 export default useSignup

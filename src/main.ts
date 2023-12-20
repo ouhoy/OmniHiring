@@ -1,12 +1,16 @@
 import './assets/styles/main.scss'
 
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
+import {auth} from "@/firebase/config";
+import {onAuthStateChanged} from "firebase/auth";
 import router from './router'
 
-const app = createApp(App)
+let app: any;
 
-app.use(router)
+onAuthStateChanged(auth, () => {
 
-
-app.mount('#app')
+    if (!app) {
+        app = createApp(App).use(router).mount('#app')
+    }
+})
