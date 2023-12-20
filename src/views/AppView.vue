@@ -40,7 +40,7 @@ onMounted(async ()=>{
           }
 
         });
-
+        filteredJobs.value = jobs.value
       })
       .catch(error => {
         console.error('Error getting documents: ', error);
@@ -60,17 +60,15 @@ onMounted(async ()=>{
         <button @click="selectButton('active')"  class="filter-btn" :class="{ selected: selectedButton === 'active' }">Active</button>
         <button @click="selectButton('completed')" class="filter-btn" :class="{ selected: selectedButton === 'completed' }">Completed</button>
       </div>
-  <div v-for="job in filteredJobs">
-    <Card :title="job.jobDescription.title" :post-date="job.date.postDate" :state=job.active :applications="job.applications.length"/>
+  <div v-if="jobs.length != 0" v-for="job in filteredJobs">
+    <Card :title="job.jobDescription.title" :post-date="job.date.postDate" :end-date="job.date.endDate" :state=job.active :applications="job.applications.length"/>
   </div>
-  <Card title="Junior Graphic Designer" post-date="17/12/2023" :state=true :applications="15"/>
-  <Card title="Frontend Developer - React" post-date="12/12/2023" :state=true :applications="8"/>
-  <Card title="Nodejs Developer" post-date="16/12/2023" :state=false :applications="6"/>
+  <div v-else>Loading...</div>
     </div>
   </main>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 
 @import "src/assets/styles/globals";
 .home-app-container {
@@ -80,26 +78,28 @@ onMounted(async ()=>{
   flex-direction: column;
   gap: 16px;
 
-  .filter-buttons {
-    display: flex;
-    gap: 8px;
+}
 
-    .filter-btn {
-      border-radius: 32px;
-      border: 1px solid #2D353C;
-      background-color: white;
-      padding: 8px 16px;
-      font-size: 16px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 16px;
 
-    }
+.filter-buttons {
+  display: flex;
+  gap: 8px;
 
-    .selected {
-      color: white;
-      background-color: #2D353C;
-    }
+  .filter-btn {
+    border-radius: 32px;
+    border: 1px solid #2D353C;
+    background-color: white;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+
+  }
+
+  .selected {
+    color: white;
+    background-color: #2D353C;
   }
 }
 

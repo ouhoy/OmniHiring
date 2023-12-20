@@ -67,6 +67,13 @@ const router = createRouter({
       component: () => import('../views/ProfileView.vue'),
       beforeEnter: requireAuth
     },
+
+    {
+      path: '/job',
+      name: 'job',
+      component: () => import('../views/JobView.vue'),
+      beforeEnter: requireAuth
+    },
   ]
 })
 

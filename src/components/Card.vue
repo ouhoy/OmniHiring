@@ -1,8 +1,9 @@
 <script setup lang="ts">
-const {applications, title, postDate, state} = defineProps<{
+const {applications, title, postDate, endDate, state} = defineProps<{
   applications: number,
   title: string,
   postDate: string,
+  endDate: string,
   state: boolean
 }>()
 
@@ -31,7 +32,7 @@ function getDateString(postedDate) {
   <div  class="card">
     <p :class="{'active-post': state}"  class="applications">{{ applications }} applications</p>
     <p class="title">{{ title }}</p>
-    <p class="post-date">{{state?"Active": "Completed" }} {{ getDateString(postDate) }}</p>
+    <p class="post-date">{{state?"Active": "Completed" }} {{ getDateString(state? postDate: endDate) }}</p>
   </div>
 </template>
 

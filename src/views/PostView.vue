@@ -22,6 +22,7 @@ const requirements = ref("");
 const responsibilities = ref("");
 const salary = ref("");
 
+const isPending = ref(false);
 const {user} = getUser()
 
 async function handleSubmit() {
@@ -68,6 +69,7 @@ async function handleSubmit() {
 
  const docId = await getDocs(userRef)
       .then(querySnapshot => {
+        isPending.value = true;
         querySnapshot.forEach(docu => {
           // Access each document's data
           const userData = docu.data();
@@ -87,15 +89,23 @@ async function handleSubmit() {
 
           }
 
+          // Clear Inputs
+          title.value = "";
+          salary.value = "";
+          overview.value = "";
+          requirements.value = "";
+          responsibilities.value = "";
+          isPending.value = false;
+
         });
       })
       .catch(error => {
         console.error('Error getting documents: ', error);
+        isPending.value = false;
+
       });
 
-// TODO: Clean Inputs After Publish
 // TODO: Redirect After Publish
-// TODO: Indicate Publish
 
 
 
@@ -120,7 +130,7 @@ async function handleSubmit() {
         <FormTextarea v-model="responsibilities" label="Responsibilities" placeholder="Responsibilities"
                       :error="errors.responsibilities" :rows='8'/>
         <FormInput v-model="salary" label="Salary" placeholder="Salary/year" type="number" :error="errors.title"/>
-        <button class="primary-btn">Publish</button>
+        <button class="primary-btn">{{isPending? "Publishing...": "Publish"}}</button>
       </form>
     </div>
 

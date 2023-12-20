@@ -5,7 +5,7 @@ import IconRightArrow from "@/components/icons/IconRightArrow.vue";
 const router = useRouter();
 
 function goBack() {
-  router.go(-1); // Navigates back one step in history
+  router.go(-1);
 }
 </script>
 
@@ -17,6 +17,7 @@ function goBack() {
 <style  lang="scss">
 .go-back {
   cursor: pointer;
+  font-weight: 500;
   gap: 4px;
   display: flex;
   align-items: center;
