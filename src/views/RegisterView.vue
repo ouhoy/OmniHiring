@@ -1,11 +1,10 @@
 <script setup lang="ts">
-
 import {reactive, ref} from "vue";
 import GoBack from "@/components/GoBack.vue";
 import FormInput from "@/components/FormInput.vue";
 
 const error = ref("")
-const errors = reactive({firstname: "", lastname: "", companyName: "", email: "", password:""})
+const errors = reactive({firstname: "", lastname: "", companyName: "", email: "", password: ""})
 const showIndividualForm = ref(true)
 const showBusinessForm = ref(false)
 
@@ -15,8 +14,7 @@ const firstName = ref("");
 const lastName = ref("");
 const companyName = ref("");
 const email = ref("");
-const password =ref("");
-
+const password = ref("");
 
 
 function handleToggleClick(isIndividual: boolean) {
@@ -27,16 +25,54 @@ function handleToggleClick(isIndividual: boolean) {
     showIndividualForm.value = false;
     showBusinessForm.value = true;
   }
-   userType.value = showIndividualForm.value? "person": "business";
+  userType.value = showIndividualForm.value ? "person" : "business";
 
 }
 
+function isAlphabetic(name: string) {
+  return name.toString().replace(/\s/g, "").match(/^[a-zA-Z]+$/) !== null;
+}
+
+
+function validateName(name: string, inputName: string) {
+
+  // @ts-ignore
+  if (!name.replaceAll(" ", "") || name.replaceAll(" ", "").length === 0) {
+    return `${inputName} is required.`;
+
+  }
+
+  if (!isAlphabetic(name)) {
+    return `${inputName} should only container normal characters.`
+  }
+
+  return false
+}
 
 function handleSubmit() {
-  errors.email = "Please make sure to enter your email!";
-  console.log(firstName.value)
-}
 
+
+  !email.value ? (errors.email = "Email is required.") : (errors.email = "")
+
+  if (userType.value === "person") {
+    // Validate Name
+    validateName(firstName.value, "First name") ?
+        (errors.firstname = validateName(firstName.value, "First name").toString()) : errors.firstname = ""
+
+
+    validateName(lastName.value, "Last name") ?
+        (errors.lastname = validateName(lastName.value, "Last name").toString()) : errors.lastname = ""
+  }
+
+  if (userType.value === "business") {
+    // @ts-ignore
+    (companyName.value.replaceAll(" ", "") < 1) ?
+        errors.companyName = "Company name is required." : errors.companyName = ""
+  }
+
+  (password.value.length < 6) ? (errors.password = "Password should be more than 6 characters.") : (errors.password = "")
+
+}
 
 
 </script>
@@ -48,39 +84,48 @@ function handleSubmit() {
 
       <div class="titles">
         <h2>Get started with<br>Omni Hiring</h2>
-        <p>Already have an account? <router-link :to="{name: 'login'}">Login here.</router-link></p>
+        <p>Already have an account?
+          <router-link :to="{name: 'login'}">Login here.</router-link>
+        </p>
       </div>
 
       <div class="form-container">
         <div class="toggle-container">
-          <button class="toggle-btn" :class="{ 'selected': showIndividualForm }" @click="handleToggleClick(true)">Individual</button>
-          <button class="toggle-btn" :class="{ 'selected': showBusinessForm }" @click="handleToggleClick(false)">Business</button>
+          <button class="toggle-btn" :class="{ 'selected': showIndividualForm }" @click="handleToggleClick(true)">
+            Individual
+          </button>
+          <button class="toggle-btn" :class="{ 'selected': showBusinessForm }" @click="handleToggleClick(false)">
+            Business
+          </button>
         </div>
 
         <form @submit.prevent="handleSubmit" class="form-container">
 
           <div v-if="showIndividualForm" class="full-name-container">
 
-            <FormInput label="First Name" v-model="firstName" placeholder="First name" type="text" :error="errors.firstname"/>
-            <FormInput label="Last Name" v-model="lastName" placeholder="Last name" type="text" :error="errors.lastname"/>
+            <FormInput label="First Name" v-model="firstName" placeholder="First name" type="text"
+                       :error="errors.firstname"/>
+            <FormInput label="Last Name" v-model="lastName" placeholder="Last name" type="text"
+                       :error="errors.lastname"/>
 
           </div>
 
-          <FormInput v-model="companyName" v-if="showBusinessForm" label="Company Name" placeholder="Company name" type="text" :error="errors.companyName"/>
+          <FormInput v-model="companyName" v-if="showBusinessForm" label="Company Name" placeholder="Company name"
+                     type="text" :error="errors.companyName"/>
           <FormInput v-model="email" label="Email" placeholder="Email@example.com" type="email" :error="errors.email"/>
 
-          <FormInput v-model="password" label="Password" placeholder="Password" type="password" :error="errors.password"/>
+          <FormInput v-model="password" label="Password" placeholder="Password" type="password"
+                     :error="errors.password"/>
 
 
+          <div class="checkbox-label">
+            <label class="checkbox-container"><span>I agree with <a>Privacy Policy</a> and <a>Terms of Use</a>.</span>
+              <input type="checkbox" checked>
+              <span class="checkmark"></span>
+            </label>
+          </div>
 
-     <div class="checkbox-label">
-       <label class="checkbox-container"><span>I agree with <a>Privacy Policy</a> and <a>Terms of Use</a>.</span>
-         <input type="checkbox" checked>
-         <span class="checkmark"></span>
-       </label>
-     </div>
-
-      <button class="primary-btn">Create Account</button>
+          <button class="primary-btn">Create Account</button>
         </form>
       </div>
     </div>
@@ -89,6 +134,7 @@ function handleSubmit() {
 
 <style lang="scss">
 @import "src/assets/styles/form";
+
 .login-register-container {
 
   p {
@@ -102,6 +148,7 @@ function handleSubmit() {
   gap: 48px;
   align-items: flex-start;
   justify-content: center;
+
   .titles {
     display: flex;
     gap: 8px;
