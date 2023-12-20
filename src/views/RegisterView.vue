@@ -50,13 +50,13 @@ function validateName(name: string, inputName: string) {
   }
 
   if (!isAlphabetic(name)) {
-    return `${inputName} should only container normal characters.`
+    return `${inputName} should only container alphabetical characters.`
   }
 
   return false
 }
 
-function handleSubmit() {
+async function handleSubmit() {
 
 
   !email.value ? (errors.email = "Email is required.") : (errors.email = "")
@@ -83,18 +83,18 @@ function handleSubmit() {
   if (!errors.password && !errors.email && !errors.firstname && !errors.lastname && !errors.companyName) {
 
     if (userType.value === "person") {
-      signup("person", `${firstName.value}-${lastName.value}`, email.value, password.value)
+     await signup("person", `${firstName.value}-${lastName.value}`, email.value, password.value)
 
     }
 
     if (userType.value === "business") {
-      signup("business", companyName.value, email.value, password.value)
+      await signup("business", companyName.value, email.value, password.value)
 
     }
 
     if (!errorMessage.value) {
 
-       router.push('/app')
+      await router.push('/app')
     }
   }
 
