@@ -96,6 +96,8 @@ async function handleSubmit() {
 
       await router.push('/app')
     }
+
+    if(errorMessage.value.includes("email-already-in-use")) errors.email = "Email already in use.";
   }
 
 
@@ -152,7 +154,7 @@ async function handleSubmit() {
             </label>
           </div>
           <button class="primary-btn">{{ isPending ? 'Creating Account...' : 'Create Account' }}</button>
-          <p>{{ errorMessage }}</p>
+          <p class="form-input-error" v-if="!errorMessage.includes('email-already-in-use')">{{ errorMessage }}</p>
         </form>
       </div>
     </div>

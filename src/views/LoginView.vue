@@ -56,7 +56,7 @@ async function handleLogin() {
 
           <a class="forgot-password">Forgot your password?</a>
 
-          <button  class="primary-btn">Create Account</button>
+          <button  class="primary-btn">Login</button>
           <p class="form-input-error" v-if="!errorMessage.includes('invalid-credential')">{{ errorMessage}}</p>
         </form>
       </div>
