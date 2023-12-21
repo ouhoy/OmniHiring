@@ -45,7 +45,7 @@ const selectButton = (button: string) => {
 
       <div class="job-card">
         <h3>{{job?.jobDescription.title}}</h3>
-        <p class="applications active-post">{{job?.applications.length}} {{job?.applications.length <= 1? 'Application': 'Applications'}} </p>
+        <p :class="{'active-post': job.active}"  class="applications">{{job?.applications.length}} {{job?.applications.length <= 1? 'Application': 'Applications'}} </p>
         <p class="post-date">{{ job.active ? "Active" : "Completed" }} {{ getDateString(job.active ? job?.date.postDate : job?.date.endDate) }}</p>
       </div>
 
@@ -96,7 +96,7 @@ const selectButton = (button: string) => {
       </div>
 
     </div>
-  <div v-else>Loading...</div>
+  <div v-else class="job-page-container"><p>Loading...</p></div>
 
   </main>
 </template>

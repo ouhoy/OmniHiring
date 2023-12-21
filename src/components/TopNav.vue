@@ -6,12 +6,14 @@ import IconNavMenu from "@/components/icons/IconNavMenu.vue";
 
 <template>
 <nav>
-<IconTopNavLogo/>
+<router-link :to="{name: 'app'}">
+  <IconTopNavLogo/>
+</router-link>
   <IconNavMenu/>
 </nav>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 nav {
   width: 95%;
   margin: 24px auto;
