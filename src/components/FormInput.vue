@@ -5,7 +5,7 @@ const { label, type, placeholder, error, modelValue } = defineProps<{
   type: string;
   placeholder: string;
   error: string;
-  modelValue: string;
+  modelValue: string | number;
 }>();
 
 const emit = defineEmits();

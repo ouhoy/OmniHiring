@@ -3,12 +3,12 @@ import {auth} from "@/firebase/config";
 
 import {signInWithEmailAndPassword} from "firebase/auth"
 
-const error = ref("");
+const errorMessage = ref("");
 const isPending = ref(false);
 
 
 async function login(email: string, password: string) {
-    error.value = ""
+    errorMessage.value = ""
     isPending.value = true
 
     try {
@@ -16,16 +16,16 @@ async function login(email: string, password: string) {
         if (!res) {
             throw new Error('Could not login please try again')
         }
-        error.value = ""
+        errorMessage.value = ""
         isPending.value = false
     } catch (err) {
-        error.value = (err as Error).message
+        errorMessage.value = (err as Error).message
         isPending.value = false
     }
 }
 
 const useLogin = () => {
-    return { error, isPending, login }
+    return { errorMessage, isPending, login }
 }
 
 export default useLogin

@@ -1,9 +1,39 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import GoBack from "@/components/GoBack.vue";
+import FormInput from "@/components/FormInput.vue";
+import useLogin from "@/composables/useLogin";
+import {useRouter} from "vue-router";
 
-const error = ref("")
+
+const router = useRouter()
+
+const {errorMessage, isPending, login} = useLogin();
+
+const errors = reactive({password: "", email: ""})
+const email = ref("");
+const password = ref("");
+
+async function handleLogin() {
+
+
+  !email.value ? errors.email = "Email is required" : errors.email = "";
+  !password.value ? errors.password = "Password is required" : errors.password = "";
+
+  if (errors.email || errors.password) return;
+
+  await login(email.value, password.value)
+
+  if (!errorMessage.value) await router.push("/app");
+  else console.log(errorMessage)
+
+  if(errorMessage.value.includes("invalid-credential")) {
+    errors.password = "Incorrect email or password.";
+    errors.email = "Incorrect email or password."
+  }
+}
 </script>
+
 
 <template>
   <main>
@@ -11,39 +41,23 @@ const error = ref("")
       <GoBack/>
       <div class="titles">
         <h2>Welcome back to<br>Omni Hiring</h2>
-        <p>Already have an account? <router-link :to="{name: 'register'}">Register here.</router-link></p>
+        <p>Already have an account?
+          <router-link :to="{name: 'register'}">Register here.</router-link>
+        </p>
       </div>
       <div class="form-container">
 
-        <form class="form-container">
+        <form @submit.prevent="handleLogin" class="form-container">
 
-          <div class="input-container">
-            <label>Email</label>
-            <input type="email" name="email" id="email" placeholder="Email@example.com">
-            <div v-if="error" class="form-input-error">
-              <p></p>
-            </div>
-          </div>
+          <FormInput v-model="email" label="Email" placeholder="Email@example.com" type="email" :error="errors.email"/>
+          <FormInput v-model="password" label="Password" placeholder="Password" type="password"
+                     :error="errors.password"/>
 
-          <div class="input-container">
-            <div class="password-label">
-              <label >Password</label>
-              <p>Forgot Your Password?</p>
-            </div>
 
-            <input type="password" name="password" id="password" placeholder="Password">
-            <div v-if="error" class="form-input-error">
-              <p></p>
-            </div>
-          </div>
+          <a class="forgot-password">Forgot your password?</a>
 
-          <div class="checkbox-label">
-            <label class="checkbox-container"><p>Remember me</p>
-              <input type="checkbox" >
-              <span class="checkmark"></span>
-            </label>
-          </div>
-          <button class="primary-btn">Create Account</button>
+          <button  class="primary-btn">Create Account</button>
+          <p class="form-input-error" v-if="!errorMessage.includes('invalid-credential')">{{ errorMessage}}</p>
         </form>
       </div>
     </div>
@@ -53,9 +67,11 @@ const error = ref("")
 <style lang="scss">
 @import "src/assets/styles/form";
 @import "src/assets/styles/form";
+
 .login-register-container {
 
-  p {
+  .forgot-password {
+    font-size: 14px;
     font-weight: 500;
   }
 
@@ -66,6 +82,11 @@ const error = ref("")
   gap: 48px;
   align-items: flex-start;
   justify-content: center;
+
+  p {
+    font-weight: 500;
+  }
+
   .titles {
     display: flex;
     gap: 8px;

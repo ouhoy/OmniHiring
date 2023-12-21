@@ -3,7 +3,7 @@
 import {onMounted, ref} from "vue";
 import ApplicantCard from "@/components/ApplicantCard.vue";
 
-import {doc} from "firebase/firestore";
+import {doc, onSnapshot} from "firebase/firestore";
 import {db} from "@/firebase/config";
 import {getDoc  } from 'firebase/firestore';
 
@@ -18,10 +18,16 @@ const jobListingDoc = doc(db, "jobListings", jobId);
 const job = ref();
 
 onMounted(async ()=>{
-   await getDoc(jobListingDoc).then((querySnapshot)=>{
-     job.value= querySnapshot.data();
-   })
 
+
+  onSnapshot(jobListingDoc, (snapshot) => {
+    if (snapshot.exists()) {
+      job.value = snapshot.data();
+    } else {
+      // Document doesn't exist or has been deleted
+      job.value = null;
+    }
+  });
 })
 
 
