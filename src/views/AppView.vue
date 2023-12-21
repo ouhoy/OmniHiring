@@ -76,10 +76,11 @@ onMounted(async ()=>{
 @import "src/assets/styles/globals";
 .home-app-container {
   width: 95%;
-  margin: 24px auto 0;
+  margin: 24px auto 88px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+
 
 }
 

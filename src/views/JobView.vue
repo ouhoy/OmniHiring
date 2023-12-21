@@ -10,6 +10,7 @@ import {getDoc  } from 'firebase/firestore';
 
 import {useRoute} from "vue-router";
 import getDateString from "@/composables/getDate";
+import GoBack from "@/components/GoBack.vue";
 const route = useRoute();
 
 const jobId = route.params.id.toString();
@@ -42,7 +43,7 @@ const selectButton = (button: string) => {
   <main>
 
     <div v-if="job" class="job-page-container">
-
+      <GoBack/>
       <div class="job-card">
         <h3>{{job?.jobDescription.title}}</h3>
         <p :class="{'active-post': job.active}"  class="applications">{{job?.applications.length}} {{job?.applications.length <= 1? 'Application': 'Applications'}} </p>
@@ -110,6 +111,7 @@ const selectButton = (button: string) => {
   width: 95%;
   margin: 24px auto 88px;
   display: flex;
+  align-items: flex-start;
   gap: 32px;
   flex-direction: column;
 
@@ -199,6 +201,7 @@ const selectButton = (button: string) => {
 }
 
 .applicants-container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;

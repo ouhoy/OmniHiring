@@ -20,7 +20,7 @@ const title = ref("");
 const overview = ref("");
 const requirements = ref("");
 const responsibilities = ref("");
-const salary = ref("");
+const salary = ref(0);
 
 const isPending = ref(false);
 const {user} = getUser()
@@ -37,12 +37,14 @@ async function handleSubmit() {
 
 
   (title.value.length === 0) ? (errors.title = "Job title is required.") : errors.title = "";
+  (salary.value === 0) ? (errors.salary = "The salary is required.") : errors.salary = "";
 
   (overview.value.length < 112) ? (errors.overview = "Overview is too short.") : errors.overview = "";
   (requirements.value.length < 88) ? (errors.requirements = "Requirements are too short.") : errors.requirements = "";
   (responsibilities.value.length < 88) ? (errors.responsibilities = "Responsibilities are too short.") : errors.responsibilities = "";
 
-  console.log(overview.value.replace(/\n/g, '-').split("-"))
+  if(errors.title || errors.salary || errors.overview || errors.requirements || errors.responsibilities) return;
+
 
   const jobListingRef = collection(db, "jobListings");
 
@@ -90,7 +92,7 @@ async function handleSubmit() {
 
           // Clear Inputs
           title.value = "";
-          salary.value = "";
+          salary.value = 0;
           overview.value = "";
           requirements.value = "";
           responsibilities.value = "";
@@ -104,7 +106,7 @@ async function handleSubmit() {
 
       });
 
-// TODO: Redirect After Publish
+// TODO:  Maybe redirect After Publish
 
 
 
@@ -128,7 +130,7 @@ async function handleSubmit() {
                       :error="errors.requirements" :rows='8'/>
         <FormTextarea v-model="responsibilities" label="Responsibilities" placeholder="Responsibilities"
                       :error="errors.responsibilities" :rows='8'/>
-        <FormInput v-model="salary" label="Salary" placeholder="Salary/year" type="number" :error="errors.title"/>
+        <FormInput v-model="salary" label="Salary" placeholder="Salary/year" type="number" :error="errors.salary"/>
         <button class="primary-btn">{{isPending? "Publishing...": "Publish"}}</button>
       </form>
     </div>

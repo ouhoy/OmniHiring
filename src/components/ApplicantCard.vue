@@ -32,10 +32,5 @@ function capitalizeFirstLetter(string:string) {
 @import "src/assets/styles/globals";
 
 
-.applicant {
 
-
-
-
-}
 </style>
