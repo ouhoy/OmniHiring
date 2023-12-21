@@ -48,12 +48,14 @@ async function handleSubmit() {
 
   const jobListingRef = collection(db, "jobListings");
 
-
+  // @ts-ignore
   const newDocRef =   await addDoc(jobListingRef, {
     active: true,
     applications: [],
-    publisherId: user.value.uid || 'none',
-    publisherName: user.value.displayName  || 'none',
+    // @ts-ignore
+    publisherId: user?.value.uid || 'none',
+    // @ts-ignore
+    publisherName: user?.value.displayName  || 'none',
     date: {postDate, endDate: ""},
     jobDescription: {
       title: title.value,
@@ -67,7 +69,7 @@ async function handleSubmit() {
 
   const userRef = collection(db, "users");
 
-
+  // @ts-ignore
  const docId = await getDocs(userRef)
       .then(querySnapshot => {
         isPending.value = true;
@@ -80,6 +82,8 @@ async function handleSubmit() {
           //   console.log("Here is the biz doc ID: ", doc.id)
           // }
 
+
+          // @ts-ignore
           if(userData.userType === "business" && userData.uid === user?.value.uid) {
 
             const docRef = doc(db, "users", docu.id);
