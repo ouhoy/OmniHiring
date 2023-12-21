@@ -1,5 +1,7 @@
 <script setup lang="ts">
 
+import IconInfoCircel from "@/components/icons/IconInfoCircel.vue";
+
 const { label, type, placeholder, error, modelValue } = defineProps<{
   label: string;
   type: string;

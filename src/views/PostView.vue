@@ -52,8 +52,8 @@ async function handleSubmit() {
   const newDocRef =   await addDoc(jobListingRef, {
     active: true,
     applications: [],
-    publisherId: user.value.uid,
-    publisherName: user.value.displayName,
+    publisherId: user.value.uid || 'none',
+    publisherName: user.value.displayName  || 'none',
     date: {postDate, endDate: ""},
     jobDescription: {
       title: title.value,
@@ -80,8 +80,7 @@ async function handleSubmit() {
           //   console.log("Here is the biz doc ID: ", doc.id)
           // }
 
-          if(userData.userType === "business" && userData.uid === user.value.uid) {
-            console.log("Here is the biz name: ", userData.displayName)
+          if(userData.userType === "business" && userData.uid === user?.value.uid) {
 
             const docRef = doc(db, "users", docu.id);
             updateDoc(docRef, {listings: arrayUnion(newDocRef)})
