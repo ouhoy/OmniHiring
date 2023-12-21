@@ -143,7 +143,7 @@ async function handleSubmit() {
 
 .post-form-container {
   width: 95%;
-  margin: 24px auto 0;
+  margin: 24px auto 88px;
   display: flex;
   flex-direction: column;
   gap: 24px;

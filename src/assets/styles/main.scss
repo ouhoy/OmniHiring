@@ -201,6 +201,15 @@ button {
 
 }
 
+.main-transform-animation {
+
+  transition: $main-transition;
+
+  &:active {
+    transform: scale(0.99);
+  }
+}
+
 ::placeholder {
   color: #A2A2A2;
 

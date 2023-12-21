@@ -3,23 +3,31 @@
 import IconAddSquare from "@/components/icons/IconAddSquare.vue";
 import IconHome from "@/components/icons/IconHome.vue";
 import IconUser from "@/components/icons/IconUser.vue";
+import { useRoute } from 'vue-router';
+const route = useRoute();
+
+
+function isActive(routePath:string) {
+  return route.path === routePath;
+}
 </script>
 
 <template>
 <nav>
 <div class="nav-container">
-<div class="link">
-  <IconHome color=""/>
+<router-link :to="{name: 'app'}" class="link main-transform-animation " :class="{ active: isActive('/app')}" >
+  <IconHome :color="isActive('/app')? '#195bff': ''"/>
   <p>Home</p>
-</div>
+</router-link>
 
-  <div class="link">
-    <IconAddSquare color=""/>
+
+  <router-link :to="{name: 'post'}"  :class="{ active: isActive('/post')}" class="link main-transform-animation ">
+    <IconAddSquare :color="isActive('/post')? '#195bff': ''"/>
     <p>New Post</p>
-  </div>
+  </router-link>
 
-  <div class="link">
-    <IconUser color=""/>
+  <div class="link main-transform-animation ">
+    <IconUser :color="isActive('/user')? '#195bff': ''"/>
     <p>Profile</p>
   </div>
 </div>
@@ -27,6 +35,10 @@ import IconUser from "@/components/icons/IconUser.vue";
 </template>
 
 <style scoped lang="scss">
+
+@import "src/assets/styles/globals";
+
+
 nav {
   width: 100%;
   position: fixed;
@@ -45,7 +57,12 @@ nav {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    .main-transform-animation {
+      &:active {
+        transform: scale(0.95);
+      }
 
+    }
      .link {
        display: flex;
        gap: 4px;
@@ -53,6 +70,7 @@ nav {
        align-items: center;
        justify-content: center;
        cursor: pointer;
+
        p {
          color: #4F4F4F;
          text-align: center;
@@ -62,6 +80,11 @@ nav {
          line-height: 12px; /* 100% */
        }
      }
+    .active {
+      p {
+        color: $primary
+      }
+    }
   }
 }
 </style>

@@ -108,7 +108,7 @@ const selectButton = (button: string) => {
 
 .job-page-container {
   width: 95%;
-  margin: 24px auto 80px;
+  margin: 24px auto 88px;
   display: flex;
   gap: 32px;
   flex-direction: column;
