@@ -14,6 +14,8 @@ export default defineConfig({
         VitePWA({
 
             manifest: {
+                background_color: "#195bff",
+                theme_color:"#195bff",
                 icons: [{
                     src: "icon-512.png",
                     sizes: "512x512",

@@ -23,9 +23,12 @@ const selectButton = (button:string) => {
   if(button === "active") filteredJobs.value = jobs.value.filter((job)=>job.active === true);
   if(button === "completed") filteredJobs.value = jobs.value.filter((job)=>job.active === false);
   if(button === "all") filteredJobs.value = jobs.value
+
+
 };
 
 const jobListingRef = collection(db, "jobListings");
+
 
 
 
@@ -36,7 +39,7 @@ onMounted(async ()=>{
           const jobData = doc.data();
 
           if(jobData.publisherId === user.value?.uid) {
-            jobs.value.push(jobData)
+            jobs.value.push({...jobData, docId: doc.id})
           }
 
         });
@@ -61,7 +64,7 @@ onMounted(async ()=>{
         <button @click="selectButton('completed')" class="filter-btn" :class="{ selected: selectedButton === 'completed' }">Completed</button>
       </div>
   <div v-if="jobs.length != 0" v-for="job in filteredJobs">
-    <Card :title="job.jobDescription.title" :post-date="job.date.postDate" :end-date="job.date.endDate" :state=job.active :applications="job.applications.length"/>
+    <Card :id="job.docId" :title="job.jobDescription.title" :post-date="job.date.postDate" :end-date="job.date.endDate" :state=job.active :applications="job.applications.length"/>
   </div>
   <div v-else>Loading...</div>
     </div>

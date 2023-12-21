@@ -1,7 +1,34 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import ApplicantCard from "@/components/ApplicantCard.vue";
+
+import {doc} from "firebase/firestore";
+import {db} from "@/firebase/config";
+import {getDoc  } from 'firebase/firestore';
+
+
+import {useRoute} from "vue-router";
+import getDateString from "@/composables/getDate";
+const route = useRoute();
+
+const jobId = route.params.id.toString();
+const jobListingDoc = doc(db, "jobListings", jobId);
+const job = ref();
+
+onMounted(async ()=>{
+   await getDoc(jobListingDoc).then((querySnapshot)=>{
+     job.value= querySnapshot.data();
+   })
+
+})
+
+
+
+function createBulletPoints(string: string): string[] {
+  return string.replace(/\n/g, '-').split("-")
+
+}
 
 const selectedButton = ref('description');
 
@@ -13,12 +40,13 @@ const selectButton = (button: string) => {
 
 <template>
   <main>
-    <div class="job-page-container">
+
+    <div v-if="job" class="job-page-container">
 
       <div class="job-card">
-        <h3>Junior Graphic Designer</h3>
-        <p class="applications active-post">15 Applications</p>
-        <p class="post-date">Active 3 days ago</p>
+        <h3>{{job?.jobDescription.title}}</h3>
+        <p class="applications active-post">{{job?.applications.length}} {{job?.applications.length <= 1? 'Application': 'Applications'}} </p>
+        <p class="post-date">{{ job.active ? "Active" : "Completed" }} {{ getDateString(job.active ? job?.date.postDate : job?.date.endDate) }}</p>
       </div>
 
       <div class="filter-buttons">
@@ -33,26 +61,25 @@ const selectButton = (button: string) => {
       <div v-if="selectedButton === 'description'" class="description-container">
         <div class="description-content">
           <p class="title">Overview:</p>
-          <p class="content">Established in 2013, LixCap focuses on economic development in emerging markets, serving government agencies, private sector companies and several donor agencies such as USAID, the World Bank Group, and the European Bank for Reconstruction and Development.</p>
+          <p class="content">{{job?.jobDescription.overview}}</p>
         </div>
         <div class="description-content">
           <p class="title">Requirements:</p>
-          <p class="content">Established in 2013, LixCap focuses on economic development in emerging markets, serving government agencies, private sector companies and several donor agencies such as USAID, the World Bank Group, and the European Bank for Reconstruction and Development.</p>
+          <ul>
+            <li class="content" v-for="requirement in createBulletPoints(job?.jobDescription.requirements)">{{ requirement }}</li>
+          </ul>
         </div>
 
         <div class="description-content">
           <p class="title">Responsibilities:</p>
           <ul>
-            <li class="content">Create captivating designs such as brochures, presentations, reports, and social media graphics for various client standards.</li>
-            <li class="content">Work closely with different departments to fulfill various design needs.</li>
-            <li class="content">Stay updated with the latest design trends and tools for innovative designs.</li>
-
+              <li class="content" v-for="responsibility in createBulletPoints(job?.jobDescription.responsibilities)">{{ responsibility }}</li>
           </ul>
         </div>
 
         <div class="description-content">
           <p class="title">Salary:</p>
-          <p class="content">$80,000/year</p>
+          <p class="content">${{Number(job?.jobDescription.salary).toLocaleString('en-US')}}/year</p>
         </div>
 
         <div class="edit-buttons">
@@ -69,7 +96,7 @@ const selectButton = (button: string) => {
       </div>
 
     </div>
-
+  <div v-else>Loading...</div>
 
   </main>
 </template>

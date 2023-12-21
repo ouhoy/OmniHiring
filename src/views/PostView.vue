@@ -43,7 +43,6 @@ async function handleSubmit() {
   (responsibilities.value.length < 88) ? (errors.responsibilities = "Responsibilities are too short.") : errors.responsibilities = "";
 
   console.log(overview.value.replace(/\n/g, '-').split("-"))
-  console.log(user.value.uid)
 
   const jobListingRef = collection(db, "jobListings");
 
