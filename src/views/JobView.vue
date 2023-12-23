@@ -6,11 +6,12 @@ import ApplicantCard from "@/components/ApplicantCard.vue";
 import {doc, onSnapshot} from "firebase/firestore";
 import {db} from "@/firebase/config";
 import {getDoc  } from 'firebase/firestore';
-
+const {userType} = getUser()
 
 import {useRoute} from "vue-router";
 import getDateString from "@/composables/getDate";
 import GoBack from "@/components/GoBack.vue";
+import getUser from "@/composables/getUser";
 const route = useRoute();
 
 const jobId = route.params.id.toString();
@@ -53,10 +54,10 @@ const selectButton = (button: string) => {
       <div class="job-card">
         <h3>{{job?.jobDescription.title}}</h3>
         <p :class="{'active-post': job.active}"  class="applications">{{job?.applications.length}} {{job?.applications.length <= 1? 'Application': 'Applications'}} </p>
-        <p class="post-date">{{ job.active ? "Active" : "Completed" }} {{ getDateString(job.active ? job?.date.postDate : job?.date.endDate) }}</p>
+        <p class="post-date">{{ job.active ? "Posted" : "Ended" }} {{ getDateString(job.active ? job?.date.postDate : job?.date.endDate) }}</p>
       </div>
 
-      <div class="filter-buttons">
+      <div v-if="userType === 'business'" class="filter-buttons">
         <button @click="selectButton('description')" class="filter-btn"
                 :class="{ selected: selectedButton === 'description' }">Description
         </button>
@@ -89,9 +90,13 @@ const selectButton = (button: string) => {
           <p class="content">${{Number(job?.jobDescription.salary).toLocaleString('en-US')}}/year</p>
         </div>
 
-        <div class="edit-buttons">
+        <div v-if="userType === 'business'" class="edit-buttons">
           <button class="primary-btn">Mark as Completed</button>
           <button class="secondary-btn">Edit</button>
+        </div>
+
+        <div v-if="userType === 'person'" class="edit-buttons">
+          <button class="primary-btn">Apply</button>
         </div>
       </div>
 

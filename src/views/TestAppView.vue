@@ -44,8 +44,7 @@ onMounted(async ()=>{
 
 
 
-  <component :is="userType === 'person'? 'PersonHomeView': 'BusinessHomeView'"/>
-  <PersonHomeView v-if="userType === 'person'"/>
-  <BusinessHomeView v-else/>
+<component :is="userType === 'person'? 'PersonHomeView': 'BusinessHomeView'"/>
+
 </template>
 
