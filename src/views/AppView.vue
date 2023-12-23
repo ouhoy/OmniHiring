@@ -12,12 +12,8 @@ import BusinessHomeView from "@/views/BusinessHomeView.vue";
 
 const {user} = getUser()
 
-
 const userType = ref("");
 const userRef = collection(db, "users");
-
-
-
 
 onMounted(async ()=>{
 

@@ -202,6 +202,24 @@ button {
 
 }
 
+.disabled-button {
+  color: #656565 !important;
+  background-color: #EBEBEB !important;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #EBEBEB !important;
+
+  }
+
+  &:active {
+    background-color: #EBEBEB !important;
+
+  }
+
+  cursor: not-allowed;
+}
+
 .main-transform-animation {
 
   transition: $main-transition;

@@ -6,7 +6,6 @@ import {arrayUnion, doc, getDocs, updateDoc} from "firebase/firestore";
 import {collection, addDoc} from "firebase/firestore";
 
 
-
 import Card from "@/components/Card.vue";
 import {onMounted, ref} from "vue";
 
@@ -15,8 +14,6 @@ const jobs = ref([] as any[])
 const filteredJobs = ref([] as any[])
 
 const jobListingRef = collection(db, "jobListings");
-
-
 
 
 onMounted(async ()=>{

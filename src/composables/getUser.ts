@@ -12,18 +12,22 @@ onAuthStateChanged(auth, (_user: any)=>{
 
 // Check Logged-in user Type
 const userRef = collection(db, "users");
-await getDocs(userRef)
-    .then(querySnapshot=>{
-        querySnapshot.forEach(doc => {
-            const userData = doc.data();
 
-            if(userData.uid === user.value?.uid) {
-                userType.value = userData.userType;
-                console.log(userData.userType);
-            }
+async function getUserType() {
+    await getDocs(userRef)
+        .then(querySnapshot=>{
+            querySnapshot.forEach(doc => {
+                const userData = doc.data();
 
-        });
-    })
+                if(userData.uid === user.value?.uid) {
+                    userType.value = userData.userType;
+                    console.log(userData.userType);
+                }
+
+            });
+        })
+
+}
 
 
 function getUser() {

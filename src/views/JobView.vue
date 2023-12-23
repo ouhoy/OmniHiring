@@ -3,33 +3,84 @@
 import {onMounted, ref} from "vue";
 import ApplicantCard from "@/components/ApplicantCard.vue";
 
-import {doc, onSnapshot} from "firebase/firestore";
+import {arrayUnion, collection, doc, getDocs, onSnapshot, updateDoc} from "firebase/firestore";
 import {db} from "@/firebase/config";
-import {getDoc  } from 'firebase/firestore';
-const {userType} = getUser()
+import {getDoc} from 'firebase/firestore';
 
 import {useRoute} from "vue-router";
 import getDateString from "@/composables/getDate";
 import GoBack from "@/components/GoBack.vue";
 import getUser from "@/composables/getUser";
+
 const route = useRoute();
 
 const jobId = route.params.id.toString();
 const jobListingDoc = doc(db, "jobListings", jobId);
 const job = ref();
 
-onMounted(async ()=>{
+const {user} = getUser();
+const userType = ref("");
+const userRef = collection(db, "users");
+const applied = ref(false);
+onMounted(async () => {
 
+  // Check Logged-in user Type
+  await getDocs(userRef)
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const userData = doc.data();
+
+          if (userData.uid === user.value?.uid) {
+            userType.value = userData.userType;
+            console.log(userData.userType);
+          }
+
+        });
+      })
 
   onSnapshot(jobListingDoc, (snapshot) => {
     if (snapshot.exists()) {
       job.value = snapshot.data();
+
+      if(userType.value === 'person') {
+        const applications = job.value.applications as [];
+        applications.forEach(application =>{
+
+          // @ts-ignore
+          if(application?.uid === user?.value?.uid) {
+            applied.value = true;
+          }
+        })
+      }
+
+
     } else {
       // Document doesn't exist or has been deleted
       job.value = null;
     }
   });
+
+
 })
+
+
+
+async function handleApply() {
+
+  if (applied.value) return;
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(today.getDate()).padStart(2, '0');
+
+  const applicationDate = `${day}/${month}/${year}`;
+
+  await updateDoc(jobListingDoc, {applications: arrayUnion({uid: user?.value?.uid, date: applicationDate})}).catch(e=>{
+    alert('Error applying to job, please try again');
+    console.log("Error applying to job, please try again:", e);
+  })
+}
 
 
 
@@ -52,9 +103,11 @@ const selectButton = (button: string) => {
     <div v-if="job" class="job-page-container">
       <GoBack/>
       <div class="job-card">
-        <h3>{{job?.jobDescription.title}}</h3>
-        <p :class="{'active-post': job.active}"  class="applications">{{job?.applications.length}} {{job?.applications.length <= 1? 'Application': 'Applications'}} </p>
-        <p class="post-date">{{ job.active ? "Posted" : "Ended" }} {{ getDateString(job.active ? job?.date.postDate : job?.date.endDate) }}</p>
+        <h3>{{ job?.jobDescription.title }}</h3>
+        <p :class="{'active-post': job.active}" class="applications">{{ job?.applications.length }}
+          {{ job?.applications.length <= 1 ? 'Application' : 'Applications' }} </p>
+        <p class="post-date">{{ job.active ? "Posted" : "Ended" }}
+          {{ getDateString(job.active ? job?.date.postDate : job?.date.endDate) }}</p>
       </div>
 
       <div v-if="userType === 'business'" class="filter-buttons">
@@ -69,25 +122,29 @@ const selectButton = (button: string) => {
       <div v-if="selectedButton === 'description'" class="description-container">
         <div class="description-content">
           <p class="title">Overview:</p>
-          <p class="content">{{job?.jobDescription.overview}}</p>
+          <p class="content">{{ job?.jobDescription.overview }}</p>
         </div>
         <div class="description-content">
           <p class="title">Requirements:</p>
           <ul>
-            <li class="content" v-for="requirement in createBulletPoints(job?.jobDescription.requirements)">{{ requirement }}</li>
+            <li class="content" v-for="requirement in createBulletPoints(job?.jobDescription.requirements)">
+              {{ requirement }}
+            </li>
           </ul>
         </div>
 
         <div class="description-content">
           <p class="title">Responsibilities:</p>
           <ul>
-              <li class="content" v-for="responsibility in createBulletPoints(job?.jobDescription.responsibilities)">{{ responsibility }}</li>
+            <li class="content" v-for="responsibility in createBulletPoints(job?.jobDescription.responsibilities)">
+              {{ responsibility }}
+            </li>
           </ul>
         </div>
 
         <div class="description-content">
           <p class="title">Salary:</p>
-          <p class="content">${{Number(job?.jobDescription.salary).toLocaleString('en-US')}}/year</p>
+          <p class="content">${{ Number(job?.jobDescription.salary).toLocaleString('en-US') }}/year</p>
         </div>
 
         <div v-if="userType === 'business'" class="edit-buttons">
@@ -96,7 +153,7 @@ const selectButton = (button: string) => {
         </div>
 
         <div v-if="userType === 'person'" class="edit-buttons">
-          <button class="primary-btn">Apply</button>
+          <button @click="handleApply" :class="{'disabled-button': applied}" class="primary-btn">{{applied? 'Applied': 'Apply'}}</button>
         </div>
       </div>
 
@@ -108,7 +165,7 @@ const selectButton = (button: string) => {
       </div>
 
     </div>
-  <div v-else class="job-page-container"><p>Loading...</p></div>
+    <div v-else class="job-page-container"><p>Loading...</p></div>
 
   </main>
 </template>
@@ -174,6 +231,7 @@ const selectButton = (button: string) => {
       font-weight: 500;
       line-height: 16px;
     }
+
     .content {
       color: #4D4D4D;
       font-size: 16px;
@@ -184,17 +242,19 @@ const selectButton = (button: string) => {
 
 
     li {
-      margin-left:16px ;
+      margin-left: 16px;
     }
 
 
   }
 }
+
 .edit-buttons {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 .primary-btn, .secondary-btn {
   width: 100%;
   height: 56px;
@@ -203,6 +263,7 @@ const selectButton = (button: string) => {
 
 
 }
+
 .secondary-btn {
   color: $dark;
   border-color: $dark;
