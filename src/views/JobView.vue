@@ -55,6 +55,7 @@ onMounted(async () => {
           if(application?.uid === user?.value?.uid) {
             applied.value = true;
           }
+        //   TODO: Make status have a date bv
         })
       }
 
@@ -167,7 +168,9 @@ const selectButton = (button: string) => {
 
         <div v-if="userType === 'business'" class="edit-buttons">
           <button @click="handleCompleted" :class="{'disabled-button': !completed}" class="primary-btn">{{!completed? 'Completed': 'Mark as Completed' }}</button>
-          <button class="secondary-btn">Edit</button>
+          <router-link :to="{name: 'post', params: {id: jobId}}">
+            <button class="secondary-btn">Edit</button>
+          </router-link>
         </div>
 
         <div v-if="userType === 'person'" class="edit-buttons">

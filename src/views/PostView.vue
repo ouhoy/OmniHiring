@@ -5,16 +5,22 @@ import GoBack from "@/components/GoBack.vue";
 import FormTextarea from "@/components/FormTextarea.vue";
 
 
-import {doc, updateDoc} from "firebase/firestore";
+import {doc, onSnapshot, updateDoc} from "firebase/firestore";
 
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import getUser from "@/composables/getUser";
 import {collection, addDoc} from "firebase/firestore";
 import {db} from "@/firebase/config";
+const router = useRouter()
 
-import { getFirestore, getDocs,arrayUnion  } from 'firebase/firestore';
+import {getFirestore, getDocs, arrayUnion} from 'firebase/firestore';
+import {useRoute, useRouter} from "vue-router";
 
+const route = useRoute();
 
+const jobId = route.params.id;
+
+const error = ref()
 const errors = reactive({title: "", overview: "", requirements: "", responsibilities: "", salary: ""})
 const title = ref("");
 const overview = ref("");
@@ -24,6 +30,7 @@ const salary = ref(0);
 
 const isPending = ref(false);
 const {user} = getUser()
+const job = ref();
 
 async function handleSubmit() {
 
@@ -43,19 +50,45 @@ async function handleSubmit() {
   (requirements.value.length < 88) ? (errors.requirements = "Requirements are too short.") : errors.requirements = "";
   (responsibilities.value.length < 88) ? (errors.responsibilities = "Responsibilities are too short.") : errors.responsibilities = "";
 
-  if(errors.title || errors.salary || errors.overview || errors.requirements || errors.responsibilities) return;
+  if (errors.title || errors.salary || errors.overview || errors.requirements || errors.responsibilities) return;
 
+  if (jobId) {
+    const jobListingDoc = doc(db, "jobListings", jobId.toString());
+    isPending.value = true;
 
+    await updateDoc(jobListingDoc, {
+      jobDescription: {
+        title: title.value,
+        overview: overview.value,
+        requirements: requirements.value,
+        responsibilities: responsibilities.value,
+        salary: salary.value,
+
+      }
+    }).catch(e=>{
+      alert("Something went wrong while updating the job info, please try again.")
+      console.log("Error Updating job: ", e)
+      error.value = e;
+    })
+
+    if(!error.value) {
+      // Clear Inputs
+      isPending.value = false;
+      
+    }
+
+    return;
+  }
   const jobListingRef = collection(db, "jobListings");
 
   // @ts-ignore
-  const newDocRef =   await addDoc(jobListingRef, {
+  const newDocRef = await addDoc(jobListingRef, {
     active: true,
     applications: [],
     // @ts-ignore
     publisherId: user?.value.uid || 'none',
     // @ts-ignore
-    publisherName: user?.value.displayName  || 'none',
+    publisherName: user?.value.displayName || 'none',
     date: {postDate, endDate: ""},
     jobDescription: {
       title: title.value,
@@ -70,7 +103,7 @@ async function handleSubmit() {
   const userRef = collection(db, "users");
 
   // @ts-ignore
- const docId = await getDocs(userRef)
+  const docId = await getDocs(userRef)
       .then(querySnapshot => {
         isPending.value = true;
         querySnapshot.forEach(docu => {
@@ -84,11 +117,10 @@ async function handleSubmit() {
 
 
           // @ts-ignore
-          if(userData.userType === "business" && userData.uid === user?.value.uid) {
+          if (userData.userType === "business" && userData.uid === user?.value.uid) {
 
             const docRef = doc(db, "users", docu.id);
             updateDoc(docRef, {listings: arrayUnion(newDocRef)})
-
 
 
           }
@@ -112,9 +144,30 @@ async function handleSubmit() {
 // TODO:  Maybe redirect After Publish
 
 
-
-
 }
+
+onMounted(async () => {
+
+  if (!jobId) return;
+  const jobListingDoc = doc(db, "jobListings", jobId.toString());
+
+  onSnapshot(jobListingDoc, (snapshot) => {
+    if (snapshot.exists()) {
+      job.value = snapshot.data();
+
+      title.value = job.value.jobDescription.title;
+      salary.value = job.value.jobDescription.salary;
+      overview.value = job.value.jobDescription.overview;
+      requirements.value = job.value.jobDescription.requirements;
+      responsibilities.value = job.value.jobDescription.responsibilities;
+
+
+    }
+
+  });
+
+
+})
 
 </script>
 
@@ -134,7 +187,8 @@ async function handleSubmit() {
         <FormTextarea v-model="responsibilities" label="Responsibilities" placeholder="Responsibilities"
                       :error="errors.responsibilities" :rows='8'/>
         <FormInput v-model="salary" label="Salary" placeholder="Salary/year" type="number" :error="errors.salary"/>
-        <button class="primary-btn">{{isPending? "Publishing...": "Publish"}}</button>
+        <button v-if="jobId" class="primary-btn">{{ isPending ? "Updating..." : "Update" }}</button>
+        <button v-else class="primary-btn">{{ isPending ? "Publishing..." : "Publish" }}</button>
       </form>
     </div>
 
