@@ -3,9 +3,8 @@
 import {onMounted, ref} from "vue";
 import ApplicantCard from "@/components/ApplicantCard.vue";
 
-import {arrayUnion, collection, doc, getDocs, onSnapshot, updateDoc} from "firebase/firestore";
+import {arrayUnion, collection, doc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
 import {db} from "@/firebase/config";
-import {getDoc} from 'firebase/firestore';
 
 import {useRoute} from "vue-router";
 import getDateString from "@/composables/getDate";
@@ -21,7 +20,12 @@ const job = ref();
 const {user} = getUser();
 const userType = ref("");
 const userRef = collection(db, "users");
+
 const applied = ref(false);
+const completed = ref(false);
+
+
+
 onMounted(async () => {
 
   // Check Logged-in user Type
@@ -32,7 +36,6 @@ onMounted(async () => {
 
           if (userData.uid === user.value?.uid) {
             userType.value = userData.userType;
-            console.log(userData.userType);
           }
 
         });
@@ -42,6 +45,8 @@ onMounted(async () => {
     if (snapshot.exists()) {
       job.value = snapshot.data();
 
+      completed.value = job.value.active;
+      console.log('Completed: ', completed.value)
       if(userType.value === 'person') {
         const applications = job.value.applications as [];
         applications.forEach(application =>{
@@ -76,13 +81,26 @@ async function handleApply() {
 
   const applicationDate = `${day}/${month}/${year}`;
 
-  await updateDoc(jobListingDoc, {applications: arrayUnion({uid: user?.value?.uid, date: applicationDate})}).catch(e=>{
+  await updateDoc(jobListingDoc, {applications: arrayUnion({uid: user?.value?.uid, date: applicationDate, status: "pending"})}).catch(e=>{
     alert('Error applying to job, please try again');
     console.log("Error applying to job, please try again:", e);
   })
 }
 
+async function handleCompleted() {
 
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(today.getDate()).padStart(2, '0');
+
+  const applicationEndDate = `${day}/${month}/${year}`;
+
+  await updateDoc(jobListingDoc, {active: false, "date.endDate": applicationEndDate }).catch(e=>{
+    alert('Error updating job starts, please try again');
+    console.log("Error updating job starts, please try again: ", e);
+  })
+}
 
 function createBulletPoints(string: string): string[] {
   return string.replace(/\n/g, '-').split("-")
@@ -148,7 +166,7 @@ const selectButton = (button: string) => {
         </div>
 
         <div v-if="userType === 'business'" class="edit-buttons">
-          <button class="primary-btn">Mark as Completed</button>
+          <button @click="handleCompleted" :class="{'disabled-button': !completed}" class="primary-btn">{{!completed? 'Completed': 'Mark as Completed' }}</button>
           <button class="secondary-btn">Edit</button>
         </div>
 

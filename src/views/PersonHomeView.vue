@@ -23,9 +23,9 @@ onMounted(async ()=>{
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
           const jobData = doc.data();
+          if(jobData.active) jobs.value.push({...jobData, docId: doc.id})
 
-            jobs.value.push({...jobData, docId: doc.id})
-
+          console.log("Here are the jobs: ",jobs.value)
         });
         filteredJobs.value = jobs.value
       })
@@ -47,6 +47,7 @@ onMounted(async ()=>{
         <Card :id="job.docId" :title="job.jobDescription.title" :post-date="job.date.postDate" :end-date="job.date.endDate" :state=job.active :applications="job.applications.length"/>
       </div>
       <div v-else>Loading...</div>
+
     </div>
   </main>
 </template>
