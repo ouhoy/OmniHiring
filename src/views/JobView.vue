@@ -69,6 +69,9 @@ onMounted(async () => {
 
 })
 
+function splitName(name: string): string[] {
+  return name.split("-")
+}
 
 
 async function handleApply() {
@@ -82,7 +85,7 @@ async function handleApply() {
 
   const applicationDate = `${day}/${month}/${year}`;
 
-  await updateDoc(jobListingDoc, {applications: arrayUnion({uid: user?.value?.uid, date: applicationDate, status: "pending"})}).catch(e=>{
+  await updateDoc(jobListingDoc, {applications: arrayUnion({uid: user?.value?.uid, date: applicationDate, status: "pending", firstname:splitName(`${user.value?.displayName}`)[0], lastname:splitName(`${user.value?.displayName}`)[1]})}).catch(e=>{
     alert('Error applying to job, please try again');
     console.log("Error applying to job, please try again:", e);
   })
@@ -179,10 +182,10 @@ const selectButton = (button: string) => {
       </div>
 
       <div v-if="selectedButton === 'applications'" class="applicants-container">
-
-        <ApplicantCard firstname="abdallah" lastname="dahmou" status="pending" application-date="18/12/2023"/>
-        <ApplicantCard firstname="rania" lastname="samih" status="approved" application-date="20/12/2023"/>
-        <ApplicantCard firstname="salwa" lastname="taha" status="rejected" application-date="15/12/2023"/>
+        <div v-if="job.applications.length" v-for="application in job.applications">
+          <ApplicantCard :firstname="application.firstname" :lastname="application.lastname" :status="application.status" :application-date="application.date"/>
+        </div>
+        <div v-else><p>There are no applications yet.</p></div>
       </div>
 
     </div>
