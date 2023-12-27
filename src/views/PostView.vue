@@ -194,7 +194,6 @@ onMounted(async () => {
 
   </main>
 
-
 </template>
 
 <style lang="scss">

@@ -10,6 +10,7 @@ import {useRoute} from "vue-router";
 import getDateString from "@/composables/getDate";
 import GoBack from "@/components/GoBack.vue";
 import getUser from "@/composables/getUser";
+import IconCloseCirrcle from "@/components/icons/IconCloseCirrcle.vue";
 
 const route = useRoute();
 
@@ -24,7 +25,7 @@ const userRef = collection(db, "users");
 const applied = ref(false);
 const completed = ref(false);
 
-
+const selectedApplicant = ref();
 
 onMounted(async () => {
 
@@ -117,6 +118,11 @@ const selectButton = (button: string) => {
   selectedButton.value = button;
 }
 
+function handleApplicationCardClick(person:string) {
+  console.log(person)
+  selectedApplicant.value = person;
+}
+
 </script>
 
 <template>
@@ -177,15 +183,28 @@ const selectButton = (button: string) => {
         </div>
 
         <div v-if="userType === 'person'" class="edit-buttons">
-          <button @click="handleApply" :class="{'disabled-button': applied}" class="primary-btn">{{applied? 'Applied': 'Apply'}}</button>
+          <button @click="handleApply" :class="{'disabled-button': applied}" class="primary-btn">{{applied? 'Application submitted': 'Apply'}}</button>
         </div>
       </div>
 
       <div v-if="selectedButton === 'applications'" class="applicants-container">
         <div v-if="job.applications.length" v-for="application in job.applications">
-          <ApplicantCard :firstname="application.firstname" :lastname="application.lastname" :status="application.status" :application-date="application.date"/>
+          <ApplicantCard @click="handleApplicationCardClick(application.firstname.toString())" :key="application.firstname+application.lastname" :firstname="application.firstname" :lastname="application.lastname" :status="application.status" :application-date="application.date"/>
+
         </div>
+
+
         <div v-else><p>There are no applications yet.</p></div>
+
+        <div class="applicant-card-container">
+          <IconCloseCirrcle/>
+          <div class="application-card-content">
+
+              <div class="title">Abdallah DAHMOU</div>
+            <div class="email">abdullah.dahmou@gmail.com</div>
+            <div class="post-date">Applied today</div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -197,6 +216,28 @@ const selectButton = (button: string) => {
 <style lang="scss">
 
 @import "src/assets/styles/globals";
+
+.applicant-card-container {
+  position: fixed;
+  margin: 0 auto;
+  padding: 8px;
+  box-sizing: border-box;
+  border-radius: 8px 8px 0 0 ;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  height: 55vh;
+  background-color: white;
+  border: 1px solid #a9a9a9;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  .application-card-content {
+    width: 100%;
+  }
+
+}
 
 
 .job-page-container {
