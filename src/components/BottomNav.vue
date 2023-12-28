@@ -26,10 +26,10 @@ function isActive(routePath:string) {
     <p>New Post</p>
   </router-link>
 
-  <div class="link main-transform-animation ">
-    <IconUser :color="isActive('/user')? '#195bff': ''"/>
+  <router-link class="link main-transform-animation " :to="{name: 'profile'}"  :class="{ active: isActive('/profile')}">
+    <IconUser :color="isActive('/profile')? '#195bff': ''"/>
     <p>Profile</p>
-  </div>
+  </router-link>
 </div>
 </nav>
 </template>

@@ -3,14 +3,15 @@
 import {onMounted, ref} from "vue";
 import ApplicantCard from "@/components/ApplicantCard.vue";
 
-import {arrayUnion, collection, doc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
+import {arrayUnion, collection, doc, getDocs, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import {db} from "@/firebase/config";
 
 import {useRoute} from "vue-router";
 import getDateString from "@/composables/getDate";
 import GoBack from "@/components/GoBack.vue";
 import getUser from "@/composables/getUser";
-import IconCloseCirrcle from "@/components/icons/IconCloseCirrcle.vue";
+import IconCloseCirrcle from "@/components/icons/IconCloseCircle.vue";
+import ApplicationReview from "@/components/ApplicationReview.vue";
 
 const route = useRoute();
 
@@ -42,12 +43,12 @@ onMounted(async () => {
         });
       })
 
+  // List Jobs
   onSnapshot(jobListingDoc, (snapshot) => {
     if (snapshot.exists()) {
       job.value = snapshot.data();
 
       completed.value = job.value.active;
-      console.log('Completed: ', completed.value)
       if(userType.value === 'person') {
         const applications = job.value.applications as [];
         applications.forEach(application =>{
@@ -118,9 +119,43 @@ const selectButton = (button: string) => {
   selectedButton.value = button;
 }
 
-function handleApplicationCardClick(person:string) {
+function handleApplicationCardClick(person:{}) {
   console.log(person)
   selectedApplicant.value = person;
+}
+function handleCardClose() {
+  selectedApplicant.value = null;
+
+}
+
+async function updateApplicationStatus(action: string) {
+  const updateApplication = (application: any) => ({
+    ...application,
+    status: action === "approve" ? "approved" : "rejected",
+  });
+
+  try {
+    const doc = await getDoc(jobListingDoc);
+    // @ts-ignore
+    const applications = doc.data().applications;
+    // @ts-ignore
+    const updatedApplications = applications.map((application) =>
+        application.uid === selectedApplicant.value.uid
+            ? updateApplication(application)
+            : application
+    );
+
+    await updateDoc(jobListingDoc, { applications: updatedApplications });
+    console.log("Application status updated successfully!");
+  } catch (error) {
+    console.error("Error updating application status:", error);
+  }
+}
+
+async function handleAction(action:"download" | "reject" | "approve") {
+  if(action === "download") return;
+  await updateApplicationStatus(action);
+
 }
 
 </script>
@@ -189,22 +224,16 @@ function handleApplicationCardClick(person:string) {
 
       <div v-if="selectedButton === 'applications'" class="applicants-container">
         <div v-if="job.applications.length" v-for="application in job.applications">
-          <ApplicantCard @click="handleApplicationCardClick(application.firstname.toString())" :key="application.firstname+application.lastname" :firstname="application.firstname" :lastname="application.lastname" :status="application.status" :application-date="application.date"/>
+          <ApplicantCard @click="handleApplicationCardClick(application)" :key="application.firstname+application.lastname" :firstname="application.firstname" :lastname="application.lastname" :status="application.status" :application-date="application.date"/>
 
         </div>
 
 
         <div v-else><p>There are no applications yet.</p></div>
+        <transition name="slide">
 
-        <div class="applicant-card-container">
-          <IconCloseCirrcle/>
-          <div class="application-card-content">
-
-              <div class="title">Abdallah DAHMOU</div>
-            <div class="email">abdullah.dahmou@gmail.com</div>
-            <div class="post-date">Applied today</div>
-          </div>
-        </div>
+          <ApplicationReview v-if="selectedApplicant" @action="handleAction" @close="handleCardClose" :firstname="selectedApplicant.firstname" :lastname="selectedApplicant.lastname" :status="selectedApplicant.status" :application-date="selectedApplicant.date"/>
+        </transition>
       </div>
 
     </div>
@@ -216,26 +245,21 @@ function handleApplicationCardClick(person:string) {
 <style lang="scss">
 
 @import "src/assets/styles/globals";
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.4s ease-in-out ;
+}
 
-.applicant-card-container {
-  position: fixed;
-  margin: 0 auto;
-  padding: 8px;
-  box-sizing: border-box;
-  border-radius: 8px 8px 0 0 ;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 95%;
-  height: 55vh;
-  background-color: white;
-  border: 1px solid #a9a9a9;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-start;
-  .application-card-content {
-    width: 100%;
-  }
+
+.slide-leave-to {
+  bottom: -400px;
+
+}
+
+
+.slide-enter-to {
+  bottom: 0px !important;
+
 
 }
 

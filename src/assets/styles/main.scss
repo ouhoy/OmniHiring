@@ -202,6 +202,19 @@ button {
 
 }
 
+.success-secondary-btn {
+  color: $green-dark-hover !important;
+  background-color: white !important;
+  border: 2px $green-dark-hover solid !important;
+
+}
+.danger-secondary-btn {
+  color: $red-dark-active !important;
+  background-color: white !important;
+  border: 2px $red-dark-active solid !important;
+
+}
+
 .disabled-button {
   color: #656565 !important;
   background-color: #EBEBEB !important;

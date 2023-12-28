@@ -20,14 +20,19 @@ console.log(user.value)
 </script>
 
 <template>
-  <p>Hello {{ user?.displayName }}</p>
-  <button @click="handleLogout">Logout</button>
+
 
   <main>
-
+    <div class="container">
+      <h2>Hello {{ user?.displayName }}</h2>
+      <button @click="handleLogout">Logout</button>
+    </div>
   </main>
 </template>
 
-<style scoped lang="scss">
-
+<style lang="scss">
+.container {
+  width: 95%;
+  margin: 0 auto;
+}
 </style>
