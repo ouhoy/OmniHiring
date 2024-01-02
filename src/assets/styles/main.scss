@@ -206,12 +206,18 @@ button {
   color: $green-dark-hover !important;
   background-color: white !important;
   border: 2px $green-dark-hover solid !important;
+  &:hover, &:active {
+    background-color: #E9FBED !important;
+  }
 
 }
 .danger-secondary-btn {
-  color: $red-dark-active !important;
+  color: $red !important;
   background-color: white !important;
-  border: 2px $red-dark-active solid !important;
+  border: 2px $red solid !important;
+  &:hover, &:active {
+    background-color: #FDE8E8 !important;
+  }
 
 }
 
