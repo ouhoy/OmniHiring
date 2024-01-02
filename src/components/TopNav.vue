@@ -26,6 +26,8 @@ function handleMenuClick() {
   showMenu.value = !showMenu.value;
 }
 
+
+
 </script>
 
 <template>
@@ -37,10 +39,12 @@ function handleMenuClick() {
     <IconNavMenu @click="handleMenuClick"/>
     <div v-if="showMenu" class="menu">
       <div class="user">
-        <div class="icon-user"></div>
+        <div class="icon-user">
+          <img src="../assets/images/user.png" alt="user image" srcset="">
+        </div>
         <div class="user-details">
-          <p class="name">Abdallah DAHMOU</p>
-          <p class="email">dahmou@gmail.com</p>
+          <p class="name">{{user?.displayName}}</p>
+          <p class="email">{{user?.email}}</p>
         </div>
 
       </div>
@@ -54,6 +58,8 @@ function handleMenuClick() {
 </template>
 
 <style scoped lang="scss">
+@import "src/assets/styles/globals";
+
 nav {
   width: 95%;
   margin: 24px auto;
@@ -63,11 +69,24 @@ nav {
 
   svg {
     cursor: pointer;
+    transition: $main-transition;
+
+    &:active {
+      transform: scale(0.99);
+    }
+
   }
 }
 
 .menu-container {
   position: relative;
+  svg {
+    transition: $main-transition;
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
 }
 
 
@@ -86,10 +105,10 @@ nav {
     justify-content: center;
   }
   .icon-user {
-    width: 40px;
-    height: 40px;
-    border-radius: 32px;
-    background-color: #b8ccff;
+    img {
+      width: 48px;
+
+    }
   }
   .user-details {
     display: flex;
@@ -123,9 +142,17 @@ nav {
       border-radius: 8px;
       padding: 8px;
       cursor: pointer;
+      transition: $main-transition;
+
       &:hover, &:active {
         background-color: #f3f3f3;
 
+
+      }
+
+
+      &:active {
+        transform: scale(0.99);
       }
     }
   }

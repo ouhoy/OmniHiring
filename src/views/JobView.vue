@@ -87,7 +87,7 @@ async function handleApply() {
 
   const applicationDate = `${day}/${month}/${year}`;
 
-  await updateDoc(jobListingDoc, {applications: arrayUnion({uid: user?.value?.uid, date: applicationDate, status: "pending", firstname:splitName(`${user.value?.displayName}`)[0], lastname:splitName(`${user.value?.displayName}`)[1]})}).catch(e=>{
+  await updateDoc(jobListingDoc, {applications: arrayUnion({uid: user?.value?.uid, date: applicationDate, status: "pending", email: user.value?.email ,firstname:splitName(`${user.value?.displayName}`)[0], lastname:splitName(`${user.value?.displayName}`)[1]})}).catch(e=>{
     alert('Error applying to job, please try again');
     console.log("Error applying to job, please try again:", e);
   })
