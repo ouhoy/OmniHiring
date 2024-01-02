@@ -167,6 +167,7 @@ async function handleAction(action:"download" | "reject" | "approve") {
       <GoBack/>
       <div class="job-card">
         <h3>{{ job?.jobDescription.title }}</h3>
+        <p class="publisher" v-if="userType === 'person'">{{job?.publisherName}}</p>
         <p :class="{'active-post': job.active}" class="applications">{{ job?.applications.length }}
           {{ job?.applications.length <= 1 ? 'Application' : 'Applications' }} </p>
         <p class="post-date">{{ job.active ? "Posted" : "Ended" }}
@@ -250,6 +251,9 @@ async function handleAction(action:"download" | "reject" | "approve") {
   transition: all 0.4s ease-in-out ;
 }
 
+.publisher {
+  font-weight: 500;
+}
 
 .slide-leave-to {
   bottom: -400px;
