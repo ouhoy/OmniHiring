@@ -4,16 +4,43 @@ import IconAddSquare from "@/components/icons/IconAddSquare.vue";
 import IconHome from "@/components/icons/IconHome.vue";
 import IconUser from "@/components/icons/IconUser.vue";
 import { useRoute } from 'vue-router';
+import {ref, onMounted} from "vue";
+import {collection, getDocs} from "firebase/firestore";
+import {db} from "@/firebase/config";
+import getUser from "@/composables/getUser";
 const route = useRoute();
+const {user} = getUser();
 
-
+const userType = ref()
 function isActive(routePath:string) {
   return route.path === routePath;
 }
+
+
+const userRef = collection(db, "users");
+
+onMounted(async ()=>{
+
+  // TODO: Make this reusable
+  // Check Logged-in user Type
+  await getDocs(userRef)
+      .then(querySnapshot=>{
+        querySnapshot.forEach(doc => {
+          const userData = doc.data();
+
+          if(userData.uid === user.value?.uid) {
+            userType.value = userData.userType;
+            console.log(userData.userType);
+          }
+
+        });
+      })
+})
+
 </script>
 
 <template>
-<nav>
+<nav v-if="userType === 'business'">
 <div class="nav-container">
 <router-link :to="{name: 'app'}" class="link main-transform-animation " :class="{ active: isActive('/app')}" >
   <IconHome :color="isActive('/app')? '#195bff': ''"/>

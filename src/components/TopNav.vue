@@ -43,7 +43,8 @@ function handleMenuClick() {
           <img src="../assets/images/user.png" alt="user image" srcset="">
         </div>
         <div class="user-details">
-          <p class="name">{{user?.displayName}}</p>
+
+          <p class="name">{{ user?.displayName?.replace("-", " ") }}</p>
           <p class="email">{{user?.email}}</p>
         </div>
 
