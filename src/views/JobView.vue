@@ -233,7 +233,7 @@ async function handleAction(action:"download" | "reject" | "approve") {
         <div v-else><p>There are no applications yet.</p></div>
         <transition name="slide">
 
-          <ApplicationReview v-if="selectedApplicant" @action="handleAction" @close="handleCardClose" :firstname="selectedApplicant.firstname" :lastname="selectedApplicant.lastname" :status="selectedApplicant.status" :application-date="selectedApplicant.date"/>
+          <ApplicationReview v-if="selectedApplicant" @action="handleAction" @close="handleCardClose" :firstname="selectedApplicant.firstname" :lastname="selectedApplicant.lastname" :email="selectedApplicant.email" :status="selectedApplicant.status" :application-date="selectedApplicant.date"/>
         </transition>
       </div>
 
