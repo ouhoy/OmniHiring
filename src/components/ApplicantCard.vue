@@ -19,7 +19,7 @@ function capitalizeFirstLetter(string:string) {
 </script>
 
 <template>
-  <div class="card">
+  <div class="card applicant-card">
     <p class="title">{{ capitalizeFirstLetter(firstname) }} {{lastname.toUpperCase()}}</p>
     <p :class="['applications', { 'pending': status === 'pending', 'rejected': status === 'rejected', 'active-post': status === 'approved' }]">
       {{ capitalizeFirstLetter(status) }}
@@ -31,6 +31,10 @@ function capitalizeFirstLetter(string:string) {
 <style lang="scss">
 @import "src/assets/styles/globals";
 
-
+@media only screen and (min-width: 960px) {
+  .applicant-card {
+    max-width: 100% !important;
+  }
+}
 
 </style>

@@ -40,7 +40,7 @@ onMounted(async ()=>{
 </script>
 
 <template>
-<nav v-if="userType === 'business'">
+<nav class="hide-for-desktop" v-if="userType === 'business'">
 <div class="nav-container">
 <router-link :to="{name: 'app'}" class="link main-transform-animation " :class="{ active: isActive('/app')}" >
   <IconHome :color="isActive('/app')? '#195bff': ''"/>

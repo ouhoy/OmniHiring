@@ -209,5 +209,19 @@ onMounted(async () => {
   align-items: flex-start;
   justify-content: flex-start;
 }
+@media only screen and (min-width: 960px) {
+  .post-form-container {
+    justify-content: center;
+    align-items: center;
+    .primary-btn {
+      width: 352px !important;
+    }
+  }
+  .form-container {
+    max-width: 640px;
+    margin: 0 auto;
+  }
 
+
+}
 </style>

@@ -213,8 +213,8 @@ async function handleAction(action:"download" | "reject" | "approve") {
 
         <div v-if="userType === 'business'" class="edit-buttons">
           <button @click="handleCompleted" :class="{'disabled-button': !completed}" class="primary-btn">{{!completed? 'Completed': 'Mark as Completed' }}</button>
-          <router-link :to="{name: 'post', params: {id: jobId}}">
-            <button class="secondary-btn">Edit</button>
+          <router-link class="secondary-btn" :to="{name: 'post', params: {id: jobId}}">
+            Edit
           </router-link>
         </div>
 
@@ -262,7 +262,7 @@ async function handleAction(action:"download" | "reject" | "approve") {
 
 
 .slide-enter-to {
-  bottom: 0px !important;
+  bottom: 0 !important;
 
 
 }
@@ -372,5 +372,36 @@ async function handleAction(action:"download" | "reject" | "approve") {
   gap: 16px;
 }
 
+@media only screen and (min-width: 960px) {
+
+
+
+  .edit-buttons {
+    display: flex;
+    width: 512px;
+    flex-direction: row;
+    gap: 8px;
+
+  }
+  p,li {
+    max-width: 704px;
+  }
+
+  .job-page-container {
+    align-items: center;
+    max-width: 704px;
+
+    .job-card {
+      align-items: flex-start;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    .filter-buttons {
+      width: 100%;
+    }
+  }
+
+}
 
 </style>

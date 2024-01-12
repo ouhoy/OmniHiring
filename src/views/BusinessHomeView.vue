@@ -67,10 +67,13 @@ onMounted(async ()=>{
         <button @click="selectButton('active')"  class="filter-btn" :class="{ selected: selectedButton === 'active' }">Active</button>
         <button @click="selectButton('completed')" class="filter-btn" :class="{ selected: selectedButton === 'completed' }">Completed</button>
       </div>
-      <div v-if="jobs.length != 0" v-for="job in filteredJobs">
-        <Card :id="job.docId" :title="job.jobDescription.title" :post-date="job.date.postDate" :end-date="job.date.endDate" :state=job.active :applications="job.applications.length"/>
+      <div class="job-posting-container">
+        <div v-if="jobs.length != 0" v-for="job in filteredJobs">
+          <Card :id="job.docId" :title="job.jobDescription.title" :post-date="job.date.postDate" :end-date="job.date.endDate" :state=job.active :applications="job.applications.length"/>
+        </div>
+        <div v-else>Loading...</div>
       </div>
-      <div v-else>Loading...</div>
+
     </div>
   </main>
 </template>
@@ -87,7 +90,13 @@ onMounted(async ()=>{
 
 
 }
-
+.job-posting-container {
+  width: 100%;
+  margin: 24px auto 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
 .filter-buttons {
   display: flex;
@@ -111,5 +120,13 @@ onMounted(async ()=>{
   }
 }
 
+@media only screen and (min-width: 960px) {
+  .job-posting-container {
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three equal columns */
+    gap: 16px;
+  }
+}
 
 </style>

@@ -68,7 +68,7 @@ function handleClose() {
   box-sizing: border-box;
   border-radius: 8px 8px 0 0 ;
   left: 50%;
-  bottom: 0px;
+  bottom: 0;
   transform: translateX(-50%);
   width: 97%;
   background-color: white;
@@ -130,7 +130,11 @@ function handleClose() {
 
 }
 
-
+@media only screen and (min-width: 960px) {
+  .applicant-card-container {
+    max-width: 728px;
+  }
+}
 
 
 </style>
