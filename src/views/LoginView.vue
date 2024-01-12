@@ -56,7 +56,10 @@ async function handleLogin() {
 
           <a class="forgot-password">Forgot your password?</a>
 
-          <button  class="primary-btn">Login</button>
+          <button  class="primary-btn">{{isPending? 'Login...': 'Login' }} </button>
+
+
+
           <p class="form-input-error" v-if="!errorMessage.includes('invalid-credential')">{{ errorMessage}}</p>
         </form>
       </div>
@@ -69,7 +72,7 @@ async function handleLogin() {
 @import "src/assets/styles/form";
 
 .login-register-container {
-
+  max-width: 512px;
   .forgot-password {
     font-size: 14px;
     font-weight: 500;
