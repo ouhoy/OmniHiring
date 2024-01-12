@@ -9,7 +9,6 @@
 body {
   font-family: 'Work Sans', sans-serif;
   max-width: 512px;
-  max-width: 1280px;
   margin: 0 auto;
 }
 
@@ -262,8 +261,17 @@ button {
   letter-spacing: -0.408px;
 }
 
-@media only screen and (min-width: 960px) {
+.hide-for-mobile {
+  display: none !important;
+}
 
+@media only screen and (min-width: 960px) {
+  body {
+    max-width: 1280px;
+  }
+  .hide-for-mobile {
+    display: block !important;
+  }
   .hide-for-desktop {
     display: none !important;
   }

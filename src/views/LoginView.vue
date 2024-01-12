@@ -36,12 +36,15 @@ async function handleLogin() {
 
 
 <template>
-  <main>
+  <main class="login-register-main-container">
+    <div class="img-container hide-for-mobile">
+      <img src="../assets/images/patrick-tomasso-gMes5dNykus-unsplash.jpg" alt="" srcset="">
+    </div>
     <div class="login-register-container">
       <GoBack/>
       <div class="titles">
         <h2>Welcome back to<br>Omni Hiring</h2>
-        <p>Already have an account?
+        <p>Don't have an account?
           <router-link :to="{name: 'register'}">Register here.</router-link>
         </p>
       </div>
@@ -72,7 +75,7 @@ async function handleLogin() {
 @import "src/assets/styles/form";
 
 .login-register-container {
-  max-width: 512px;
+
   .forgot-password {
     font-size: 14px;
     font-weight: 500;
@@ -114,6 +117,42 @@ async function handleLogin() {
     gap: 24px;
     align-items: center;
     justify-content: center;
+  }
+
+}
+
+@media only screen and (min-width: 960px) {
+
+  .login-register-container {
+    height: 100vh;
+    max-width: 512px;
+
+
+
+  }
+  .login-register-main-container {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .img-container {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+    }
+
+  }
+
+  .img-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+      height: 95%;
+      max-height:832px;
+      width: 95%;
+      border-radius: 16px;
+    }
   }
 
 }

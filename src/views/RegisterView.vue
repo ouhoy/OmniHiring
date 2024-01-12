@@ -107,7 +107,10 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <main>
+  <main class="login-register-main-container">
+    <div class="img-container hide-for-mobile">
+      <img src="../assets/images/patrick-tomasso-gMes5dNykus-unsplash.jpg" alt="" srcset="">
+    </div>
     <div class="login-register-container">
       <GoBack/>
 
