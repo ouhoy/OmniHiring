@@ -93,7 +93,7 @@ onMounted(async ()=>{
 .job-posting-container {
   width: 100%;
   margin: 24px auto 88px;
-  display: flex;
+  display: flex ;
   flex-direction: column;
   gap: 16px;
 }

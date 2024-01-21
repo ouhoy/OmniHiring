@@ -58,10 +58,10 @@ onMounted(async ()=>{
 .home-app-person-container {
   width: 95%;
   margin: 24px auto 88px;
-  display: flex;
+  display: flex !important;
   justify-content: center;
   align-items: center;
-  flex-direction: row;
+  flex-direction: column;
   gap: 16px;
 
 

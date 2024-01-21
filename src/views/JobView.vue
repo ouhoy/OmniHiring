@@ -1,17 +1,22 @@
 <script setup lang="ts">
 
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import ApplicantCard from "@/components/ApplicantCard.vue";
 
-import {arrayUnion, collection, doc, getDocs, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
-import {db} from "@/firebase/config";
+import {arrayUnion, collection, doc, getDocs, getDoc, onSnapshot, updateDoc} from "firebase/firestore";
+import {auth, db, storage} from "@/firebase/config";
 
 import {useRoute} from "vue-router";
 import getDateString from "@/composables/getDate";
 import GoBack from "@/components/GoBack.vue";
 import getUser from "@/composables/getUser";
 import ApplicationReview from "@/components/ApplicationReview.vue";
+import {uploadBytes, ref as refo} from 'firebase/storage';
 
+
+
+
+const resume = ref();
 const route = useRoute();
 
 const jobId = route.params.id.toString();
@@ -48,15 +53,15 @@ onMounted(async () => {
       job.value = snapshot.data();
 
       completed.value = job.value.active;
-      if(userType.value === 'person') {
+      if (userType.value === 'person') {
         const applications = job.value.applications as [];
-        applications.forEach(application =>{
+        applications.forEach(application => {
 
           // @ts-ignore
-          if(application?.uid === user?.value?.uid) {
+          if (application?.uid === user?.value?.uid) {
             applied.value = true;
           }
-        //   TODO: Make status have a date bv
+          //   TODO: Make status have a date bv
         })
       }
 
@@ -86,10 +91,41 @@ async function handleApply() {
 
   const applicationDate = `${day}/${month}/${year}`;
 
-  await updateDoc(jobListingDoc, {applications: arrayUnion({uid: user?.value?.uid, date: applicationDate, status: "pending", email: user.value?.email ,firstname:splitName(`${user.value?.displayName}`)[0], lastname:splitName(`${user.value?.displayName}`)[1]})}).catch(e=>{
+  await updateDoc(jobListingDoc, {applications: arrayUnion({uid: user?.value?.uid, date: applicationDate, status: "pending", email: user.value?.email, firstname: splitName(`${user.value?.displayName}`)[0], lastname: splitName(`${user.value?.displayName}`)[1]})}).catch(e => {
     alert('Error applying to job, please try again');
     console.log("Error applying to job, please try again:", e);
   })
+}
+
+function truncateText(text:string, maxLength:number) {
+  if (text.length <= maxLength) {
+    return text; // No truncation needed
+  } else {
+    return text.substring(0, maxLength) + '...';
+  }
+}
+
+const uploadResumeState = ref("Upload Resume")
+const canApply = ref(false)
+async function handleResume() {
+  const uploadedResume = resume.value.files[0];
+  canApply.value = false;
+
+  if(uploadedResume) {
+    uploadResumeState.value = "Uploading..."
+
+
+    const storageRef = refo(storage, `${auth.currentUser?.uid}`);
+    uploadBytes(storageRef, uploadedResume).then(
+        (snapshot)=>{
+          uploadResumeState.value = truncateText(uploadedResume.name, 20)
+          canApply.value = true;
+        }
+    ).catch(error=> {
+      alert("Something went wrong, please try again!")
+    })
+  }
+
 }
 
 async function handleCompleted() {
@@ -101,7 +137,7 @@ async function handleCompleted() {
 
   const applicationEndDate = `${day}/${month}/${year}`;
 
-  await updateDoc(jobListingDoc, {active: false, "date.endDate": applicationEndDate }).catch(e=>{
+  await updateDoc(jobListingDoc, {active: false, "date.endDate": applicationEndDate}).catch(e => {
     alert('Error updating job starts, please try again');
     console.log("Error updating job starts, please try again: ", e);
   })
@@ -118,10 +154,11 @@ const selectButton = (button: string) => {
   selectedButton.value = button;
 }
 
-function handleApplicationCardClick(person:{}) {
+function handleApplicationCardClick(person: {}) {
   console.log(person)
   selectedApplicant.value = person;
 }
+
 function handleCardClose() {
   selectedApplicant.value = null;
 
@@ -144,15 +181,15 @@ async function updateApplicationStatus(action: string) {
             : application
     );
 
-    await updateDoc(jobListingDoc, { applications: updatedApplications });
+    await updateDoc(jobListingDoc, {applications: updatedApplications});
     console.log("Application status updated successfully!");
   } catch (error) {
     console.error("Error updating application status:", error);
   }
 }
 
-async function handleAction(action:"download" | "reject" | "approve") {
-  if(action === "download") return;
+async function handleAction(action: "download" | "reject" | "approve") {
+  if (action === "download") return;
   await updateApplicationStatus(action);
 
 }
@@ -166,7 +203,7 @@ async function handleAction(action:"download" | "reject" | "approve") {
       <GoBack/>
       <div class="job-card">
         <h3>{{ job?.jobDescription.title }}</h3>
-        <p class="publisher" v-if="userType === 'person'">{{job?.publisherName}}</p>
+        <p class="publisher" v-if="userType === 'person'">{{ job?.publisherName }}</p>
         <p :class="{'active-post': job.active}" class="applications">{{ job?.applications.length }}
           {{ job?.applications.length <= 1 ? 'Application' : 'Applications' }} </p>
         <p class="post-date">{{ job.active ? "Posted" : "Ended" }}
@@ -211,20 +248,40 @@ async function handleAction(action:"download" | "reject" | "approve") {
         </div>
 
         <div v-if="userType === 'business'" class="edit-buttons">
-          <button @click="handleCompleted" :class="{'disabled-button': !completed}" class="primary-btn">{{!completed? 'Completed': 'Mark as Completed' }}</button>
+          <button @click="handleCompleted" :class="{'disabled-button': !completed}" class="primary-btn">
+            {{ !completed ? 'Completed' : 'Mark as Completed' }}
+          </button>
           <router-link class="secondary-btn" :to="{name: 'post', params: {id: jobId}}">
             Edit
           </router-link>
         </div>
 
         <div v-if="userType === 'person'" class="edit-buttons">
-          <button @click="handleApply" :class="{'disabled-button': applied}" class="primary-btn">{{applied? 'Application submitted': 'Apply'}}</button>
+          <div v-if="!applied" class="w-full flex justify-center items-center">
+            <div class="flex items-center justify-center w-full">
+              <label for="file-input" class="w-full secondary-btn">
+                <p class="w-full text-center">{{uploadResumeState}}</p>
+                <input ref="resume" @change="handleResume" id="file-input" type="file" class="hidden"/>
+              </label>
+            </div>
+          </div>
+          <button v-if="!canApply && !applied"  class="disabled-button primary-btn">
+            Upload resume to apply
+          </button>
+          <button v-if="canApply || applied" @click="handleApply" :class="{'disabled-button': applied}" class="primary-btn">
+            {{ applied ? 'Application submitted' : 'Apply' }}
+          </button>
         </div>
       </div>
 
       <div v-if="selectedButton === 'applications'" class="applicants-container">
         <div v-if="job.applications.length" v-for="application in job.applications">
-          <ApplicantCard @click="handleApplicationCardClick(application)" :key="application.firstname+application.lastname" :firstname="application.firstname" :lastname="application.lastname" :status="application.status" :application-date="application.date"/>
+          <ApplicantCard @click="handleApplicationCardClick(application)"
+                         :key="application.firstname+application.lastname" :firstname="application.firstname"
+                         :lastname="application.lastname" :status="application.status"
+                         :application-date="application.date"
+                         :uid="application.uid"
+                          />
 
         </div>
 
@@ -232,7 +289,13 @@ async function handleAction(action:"download" | "reject" | "approve") {
         <div v-else><p>There are no applications yet.</p></div>
         <transition name="slide">
 
-          <ApplicationReview v-if="selectedApplicant" @action="handleAction" @close="handleCardClose" :firstname="selectedApplicant.firstname" :lastname="selectedApplicant.lastname" :email="selectedApplicant.email" :status="selectedApplicant.status" :application-date="selectedApplicant.date"/>
+          <ApplicationReview v-if="selectedApplicant" @action="handleAction" @close="handleCardClose"
+                             :firstname="selectedApplicant.firstname" :lastname="selectedApplicant.lastname"
+                             :email="selectedApplicant.email" :status="selectedApplicant.status"
+                             :application-date="selectedApplicant.date"
+                             :uid="selectedApplicant.uid"
+
+                              />
         </transition>
       </div>
 
@@ -245,9 +308,10 @@ async function handleAction(action:"download" | "reject" | "approve") {
 <style lang="scss">
 
 @import "src/assets/styles/globals";
+
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.4s ease-in-out ;
+  transition: all 0.4s ease-in-out;
 }
 
 .publisher {
@@ -286,6 +350,10 @@ async function handleAction(action:"download" | "reject" | "approve") {
   }
 
 
+}
+
+.hidden {
+  display: none;
 }
 
 .filter-buttons {
@@ -374,7 +442,6 @@ async function handleAction(action:"download" | "reject" | "approve") {
 @media only screen and (min-width: 960px) {
 
 
-
   .edit-buttons {
     display: flex;
     width: 512px;
@@ -382,7 +449,7 @@ async function handleAction(action:"download" | "reject" | "approve") {
     gap: 8px;
 
   }
-  p,li {
+  p, li {
     max-width: 704px;
   }
 

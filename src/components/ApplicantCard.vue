@@ -7,6 +7,7 @@ defineProps<{
   lastname: string,
   status: "pending" | "approved" | "rejected",
   applicationDate: string
+  uid:string
 }>()
 
 function capitalizeFirstLetter(string:string) {
