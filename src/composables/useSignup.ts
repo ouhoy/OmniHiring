@@ -22,8 +22,6 @@ async function signup(userType: "person" | "business", displayName: string, emai
         // Set the user's displayName
         await updateProfile(res.user, {displayName})
 
-        // const personRef = collection(db, "persons");
-        // const businessRef = collection(db, "businesses");
         const userRef = collection(db, "users");
 
 

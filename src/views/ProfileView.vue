@@ -3,6 +3,7 @@ import getUser from "@/composables/getUser";
 import {auth} from "@/firebase/config";
 import {signOut} from "firebase/auth"
 import {useRouter} from "vue-router";
+import ProfilePhotoIcon from "@/assets/images/icons/ProfilePhotoIcon.vue";
 
 const router = useRouter()
 const {user} = getUser();
@@ -24,8 +25,25 @@ console.log(user.value)
 
   <main>
     <div class="container">
-      <h2>Hello {{ user?.displayName }}</h2>
-      <button @click="handleLogout">Logout</button>
+      <main class="mb-24 l   flex gap-20">
+        <div class="w-full  relative">
+          <!--   COVER   -->
+          <div class="w-full h-64 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-6"></div>
+
+          <!--   USER PROFILE   -->
+          <div class="profile-icon flex justify-center items-center left-0 right-0 mx-auto rounded-full bg-gray-50 w-32 h-32 absolute">
+
+            <ProfilePhotoIcon/>
+
+          </div>
+          <div>
+            <p class="text-center text-lg font-medium text-gray-950 mt-24">{{user?.displayName}}</p>
+
+          </div>
+        </div>
+
+
+      </main>
     </div>
   </main>
 </template>
@@ -34,5 +52,8 @@ console.log(user.value)
 .container {
   width: 95%;
   margin: 0 auto;
+}
+.profile-icon {
+  top: 192px;
 }
 </style>

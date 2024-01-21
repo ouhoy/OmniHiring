@@ -10,7 +10,6 @@ import {useRoute} from "vue-router";
 import getDateString from "@/composables/getDate";
 import GoBack from "@/components/GoBack.vue";
 import getUser from "@/composables/getUser";
-import IconCloseCirrcle from "@/components/icons/IconCloseCircle.vue";
 import ApplicationReview from "@/components/ApplicationReview.vue";
 
 const route = useRoute();

@@ -3,16 +3,16 @@
 
 <template>
   <main>
-    <div class="onboarding-container">
+    <div class="onboarding-container ">
       <div class="onboarding-content">
         <img src="../assets/images/omnihiring-logo.svg" alt="" srcset="">
         <div class="onboarding-titles">
           <h2>Simplifying Work life<br>and Progress Tracking</h2>
-          <p>Step into a comprehensive space, tracking progress and enhancing work experiences effortlessly.</p>
+          <p class="max-w-md">Step into a comprehensive space, tracking progress and enhancing work experiences effortlessly.</p>
         </div>
 
       </div>
-      <div class="onboarding-buttons">
+      <div class="onboarding-buttons max-w-xl">
         <router-link class="onboarding-btn" :to='{name: "register"}'>
           <button class="primary-btn">Create Account</button>
         </router-link>

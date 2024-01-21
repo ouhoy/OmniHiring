@@ -41,9 +41,9 @@ onMounted(async ()=>{
 
 
   <main>
-    <div class="home-app-container">
+    <div class="home-app-person-container">
 
-      <div v-if="jobs.length != 0" v-for="job in filteredJobs">
+      <div class="w-full" v-if="jobs.length != 0" v-for="job in filteredJobs">
         <Card :id="job.docId" :title="job.jobDescription.title" :post-date="job.date.postDate" :end-date="job.date.endDate" :state=job.active :applications="job.applications.length"/>
       </div>
       <div v-else>Loading...</div>
@@ -55,16 +55,25 @@ onMounted(async ()=>{
 <style lang="scss">
 
 @import "src/assets/styles/globals";
-.home-app-container {
+.home-app-person-container {
   width: 95%;
   margin: 24px auto 88px;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
   gap: 16px;
 
 
 }
 
+@media only screen and (min-width: 960px) {
+  .home-app-person-container {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr); /* Three equal columns */
+    gap: 16px;
+  }
+}
 
 .filter-buttons {
   display: flex;

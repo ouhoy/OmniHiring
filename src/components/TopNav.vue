@@ -5,9 +5,11 @@ import IconNavMenu from "@/components/icons/IconNavMenu.vue";
 import {ref} from "vue";
 
 import getUser from "@/composables/getUser";
-import {auth} from "@/firebase/config";
+import {auth, db} from "@/firebase/config";
 import {signOut} from "firebase/auth"
 import {useRouter} from "vue-router";
+import {collection, getDocs} from "firebase/firestore";
+import {onMounted} from "vue";
 
 const router = useRouter()
 const {user} = getUser();
@@ -27,6 +29,24 @@ function handleMenuClick() {
 }
 
 
+const userType = ref("");
+const userRef = collection(db, "users");
+
+onMounted(async ()=>{
+
+  await getDocs(userRef)
+      .then(querySnapshot=>{
+        querySnapshot.forEach(doc => {
+          const userData = doc.data();
+
+          if(userData.uid === user.value?.uid) {
+            userType.value = userData.userType;
+            console.log(userData.userType);
+          }
+
+        });
+      })
+})
 
 </script>
 
@@ -35,25 +55,32 @@ function handleMenuClick() {
 <router-link :to="{name: 'app'}">
   <IconTopNavLogo/>
 </router-link>
-  <div class="menu-container">
-    <IconNavMenu @click="handleMenuClick"/>
-    <div v-if="showMenu" class="menu">
-      <div class="user">
-        <div class="icon-user">
-          <img src="../assets/images/user.png" alt="user image" srcset="">
-        </div>
-        <div class="user-details">
+  <div class="flex items-center justify-center gap-6">
+    <router-link :to="{name: 'post'}">
+    <p v-if="userType === 'business'" class="hidden md:block text-blue-600 cursor-pointer">Post new job</p>
+    </router-link>
+    <div class="menu-container">
+      <IconNavMenu @click="handleMenuClick"/>
+      <div v-if="showMenu" class="menu">
+        <div class="user">
+          <div class="icon-user">
+            <img class="user-img" src="../assets/images/user.png" alt="user image" srcset="">
+          </div>
+          <router-link :to="{name: 'profile'}" class="user-details">
 
-          <p class="name">{{ user?.displayName?.replace("-", " ") }}</p>
-          <p class="email">{{user?.email}}</p>
+            <p class="name">{{ user?.displayName?.replace("-", " ") }}</p>
+            <p class="email">{{user?.email}}</p>
+          </router-link>
+
         </div>
 
+        <div class="links">
+          <p @click="handleLogout">Logout</p>
+        </div>
       </div>
 
-      <div class="links">
-        <p @click="handleLogout">Logout</p>
-      </div>
     </div>
+
   </div>
 </nav>
 </template>
@@ -95,6 +122,7 @@ nav {
   padding:16px;
   border-radius: 8px;
   position: absolute;
+  z-index: 10;
   top: 24px;
   right: 25%;
   background-color: white;
@@ -107,9 +135,15 @@ nav {
   }
   .icon-user {
     img {
-      width: 48px;
+      width: 48px !important;
+      height: 48px !important;
 
     }
+  }
+
+  .user-img {
+    width: 48px !important;
+    height: 48px !important;
   }
   .user-details {
     display: flex;
