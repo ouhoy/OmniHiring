@@ -37,6 +37,7 @@ const userRef = collection(db, "users");
 onMounted(async ()=>{
 
   // Get Job Listings
+  // Get Job Listings
   await getDocs(jobListingRef)
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
